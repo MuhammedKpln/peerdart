@@ -138,7 +138,7 @@ class Negotiator<T extends BaseConnection> {
     logger.log("Creating RTCPeerConnection.");
 
     final peerConnection =
-        await createPeerConnection(connection.provider.options.config);
+        await createPeerConnection(connection.provider.options.config!);
 
     // this._setupListeners(peerConnection);
 

@@ -2,7 +2,24 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:messagepack/messagepack.dart' as msgpack;
 
+const _DEFAULT_CONFIG = {
+  "iceServers": [
+    {"urls": "stun:stun.l.google.com:19302"},
+    {
+      "urls": [
+        "turn:eu-0.turn.peerjs.com:3478",
+        "turn:us-0.turn.peerjs.com:3478",
+      ],
+      "username": "peerjs",
+      "credential": "peerjsp",
+    },
+  ],
+  "sdpSemantics": "unified-plan",
+};
+
 class Util {
+  Map<String, dynamic> get defaultConfig => _DEFAULT_CONFIG;
+
   unpack(Uint8List data) {
     return msgpack.Unpacker(data).unpackBinary();
   }

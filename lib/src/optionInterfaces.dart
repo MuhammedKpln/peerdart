@@ -26,4 +26,30 @@ class PeerOptions {
   }) {
     token = PeerConfig.RANDOM_TOKEN;
   }
+
+  PeerOptions merge(PeerOptions options) => PeerOptions(
+      debug: options.debug ?? debug,
+      host: options.host ?? host,
+      port: options.port ?? port,
+      path: options.path ?? path,
+      key: options.key ?? key,
+      token: options.token ?? token,
+      config: options.config ?? config);
+}
+
+abstract class PeerConnectOption {
+  String? label;
+  dynamic metadata;
+  String? serialization;
+  bool? reliable;
+}
+
+abstract class CallOption {
+  dynamic metadata;
+  Function? sdpTransform;
+
+  Map<String, dynamic> toMap() => {
+        "metadata": metadata,
+        "sdpTransform": sdpTransform,
+      };
 }

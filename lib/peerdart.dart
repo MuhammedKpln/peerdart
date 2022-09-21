@@ -3,4 +3,5 @@
 /// More dartdocs go here.
 library peerdart;
 
-export 'src/peerdart.dart';
+export 'src/peer.dart';
+export 'src/enums.dart';

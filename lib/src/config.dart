@@ -20,4 +20,5 @@ class PeerConfig {
   static const defaultConfig = _DEFAULT_CONFIG;
   static const DEFAULT_KEY = "peerjs";
   static final RANDOM_TOKEN = Uuid().v4();
+  static const VERSION = "1.0";
 }

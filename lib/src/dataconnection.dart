@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:peerdart/src/baseconnection.dart';
-import 'package:peerdart/src/servermessage.dart';
 import 'package:peerdart/src/enums.dart';
-
-import 'logger.dart';
+import 'package:peerdart/src/logger.dart';
+import 'package:peerdart/src/servermessage.dart';
 
 class DataConnection extends BaseConnection {
-  static const ID_PREFIX = "dc_";
+  DataConnection(super.peerId, super.provider, super.options);
+  static const ID_PREFIX = 'dc_';
   static const MAX_BUFFERED_AMOUNT = 8 * 1024 * 1024;
   late String label;
   late bool reliable;
@@ -45,19 +45,19 @@ class DataConnection extends BaseConnection {
     dataChannel.onDataChannelState = (state) {
       switch (state) {
         case RTCDataChannelState.RTCDataChannelOpen:
-          logger.log("DC#$connectionId dc connection success");
+          logger.log('DC#$connectionId dc connection success');
           open = true;
-          emit("open");
+          emit('open');
           break;
 
         case RTCDataChannelState.RTCDataChannelClosed:
-          logger.log("DC#$connectionId dc closed for:$peer");
+          logger.log('DC#$connectionId dc closed for:$peer');
           close();
           break;
       }
 
       dataChannel.onMessage = (message) {
-        logger.log("DC#$connectionId dc onmessage:$message");
+        logger.log('DC#$connectionId dc onmessage:$message');
         _handleDataMessage(message);
       };
     };
@@ -72,6 +72,6 @@ class DataConnection extends BaseConnection {
       deserializedData = jsonDecode(message.text);
     }
 
-    emit("data", deserializedData);
+    emit('data', deserializedData);
   }
 }

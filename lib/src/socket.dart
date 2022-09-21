@@ -114,7 +114,7 @@ class Socket extends EventEmitter {
     }
 
     if (data.type == null) {
-      emit(SocketEventType.Error.type, "Invalid message");
+      emit(SocketEventType.Error.type, null, "Invalid message");
       return;
     }
 

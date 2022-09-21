@@ -142,7 +142,7 @@ class Peer extends EventEmitter {
       case ServerMessageType.Open:
         _lastServerId = id;
         _open = true;
-        emit('open', id);
+        emit(ServerMessageType.Open.type, null, id);
         break;
     }
   }
@@ -184,7 +184,7 @@ class Peer extends EventEmitter {
   void emitError(PeerErrorType type, dynamic err) {
     logger.error('Error: $err');
 
-    emit(SocketEventType.Error.type, err);
+    emit(SocketEventType.Error.type, null, err);
   }
 
   void destroy() {
@@ -222,7 +222,7 @@ class Peer extends EventEmitter {
     _lastServerId = currentId;
     _id = null;
 
-    emit(SocketEventType.Disconnected.type, currentId);
+    emit(SocketEventType.Disconnected.type, null, currentId);
   }
 
   DataConnection connect(String peer, {PeerConnectOption? options}) {

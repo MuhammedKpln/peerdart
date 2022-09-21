@@ -189,6 +189,7 @@ class Negotiator<T extends BaseConnection> {
           );
           connection.emit(
             "error",
+            null,
             Exception("${"Negotiation of connection to $peerId"} failed."),
           );
           connection.close();
@@ -204,6 +205,7 @@ class Negotiator<T extends BaseConnection> {
           );
           connection.emit(
             "error",
+            null,
             Exception("Connection to $peerId closed."),
           );
           connection.close();
@@ -212,6 +214,7 @@ class Negotiator<T extends BaseConnection> {
 
       connection.emit(
         "iceStateChanged",
+        null,
         peerConnection.iceConnectionState,
       );
     };

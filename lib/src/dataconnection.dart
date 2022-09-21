@@ -72,6 +72,6 @@ class DataConnection extends BaseConnection {
       deserializedData = jsonDecode(message.text);
     }
 
-    emit('data', deserializedData);
+    emit('data', null, deserializedData);
   }
 }

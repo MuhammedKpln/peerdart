@@ -27,7 +27,7 @@ class MediaConnection extends BaseConnection {
     logger.log('Receiving stream $remoteStream');
 
     _remoteStream = remoteStream;
-    super.emit('stream', remoteStream); // Should we call this `open`?
+    super.emit('stream', null, remoteStream); // Should we call this `open`?
   }
 
   @override

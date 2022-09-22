@@ -59,3 +59,13 @@ enum SerializationType {
   const SerializationType(this.type);
   final String type;
 }
+
+enum LogLevel {
+  Disabled(3),
+  Errors(2),
+  Warnings(1),
+  All(0);
+
+  const LogLevel(this.level);
+  final int level;
+}

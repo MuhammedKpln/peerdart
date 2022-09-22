@@ -10,7 +10,7 @@ import 'optionInterfaces.dart';
 class Socket extends EventEmitter {
   bool _disconnected = true;
   late String? _id;
-  late List<Object> _messagesQueue = [];
+  late List<Map<String, dynamic>> _messagesQueue = [];
   late WebSocketChannel? _socket;
   late dynamic _wsPingTimer;
   late Uri _baseUrl;
@@ -101,24 +101,27 @@ class Socket extends EventEmitter {
     _disconnected = true;
   }
 
-  void send(dynamic data) {
+  void send(Map<String, dynamic> data) {
     if (_disconnected) {
+      logger.error("Socket disconnected!");
+
       return;
     }
 
     // If we didn't get an ID yet, we can't yet send anything so we should queue
     // up these messages.
-    if (_id != null) {
+    if (_id == null) {
       _messagesQueue.add(data);
       return;
     }
 
-    if (data.type == null) {
+    if (data["type"] == null) {
       emit(SocketEventType.Error.type, null, "Invalid message");
       return;
     }
 
     if (!_wsOpen()) {
+      logger.error("Socket not open!");
       return;
     }
 

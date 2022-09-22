@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:peerdart/src/baseconnection.dart';
 import 'package:peerdart/src/dataconnection.dart';
+import 'package:peerdart/src/optionInterfaces.dart';
 
 import 'enums.dart';
 import 'logger.dart';
@@ -10,15 +13,15 @@ class Negotiator<T extends BaseConnection> {
   T connection;
   Negotiator(this.connection);
 
-  Future<void> startConnection(dynamic options) async {
+  Future<void> startConnection(PeerConnectOption options) async {
     final peerConnection = await _startPeerConnection();
     connection.peerConnection = peerConnection;
 
-    if (connection.type == ConnectionType.Media && options._stream) {
-      _addTracksToConnection(options._stream, peerConnection);
+    if (connection.type == ConnectionType.Media && options.stream != null) {
+      _addTracksToConnection(options.stream!, peerConnection);
     }
 
-    if (options.originator) {
+    if (options.originator != null && options.originator!) {
       if (connection.type == ConnectionType.Data) {
         final dataConnection = connection as DataConnection;
 
@@ -30,24 +33,25 @@ class Negotiator<T extends BaseConnection> {
       }
       await _makeOffer();
     } else {
-      await handleSDP("OFFER", options.sdp);
+      await handleSDP("OFFER", options.sdp!);
     }
   }
 
-  Future<void> handleSDP(String type, dynamic sdp) async {
-    sdp = RTCSessionDescription(sdp, type);
+  Future<void> handleSDP(String type, String sdp) async {
+    final description = RTCSessionDescription(sdp, type.toLowerCase());
 
     final peerConnection = connection.peerConnection;
     final provider = connection.provider;
     logger.log("Setting remote description $sdp");
 
     try {
-      await peerConnection.setRemoteDescription(sdp);
+      await peerConnection.setRemoteDescription(description);
       logger.log("Set remoteDescription:$type for:${connection.peer}");
       if (type == "OFFER") {
         await _makeAnswer();
       }
     } catch (err) {
+      print(err);
       provider.emitError(PeerErrorType.WebRTC, err);
       logger.log("Failed to setRemoteDescription, $err");
     }
@@ -67,10 +71,10 @@ class Negotiator<T extends BaseConnection> {
         logger.log("Set localDescription: $answer for ${connection.peer}");
 
         provider.socket.send({
-          "type": ServerMessageType.Answer,
+          "type": ServerMessageType.Answer.type,
           "payload": {
-            "sdp": answer,
-            "type": connection.type,
+            "sdp": answer.sdp,
+            "type": connection.type.type,
             "connectionId": connection.connectionId,
             "browser": "s",
           },
@@ -91,7 +95,7 @@ class Negotiator<T extends BaseConnection> {
 
     try {
       final offer = await peerConnection.createOffer(
-        connection.options.constraints,
+        connection.options?.constraints ?? {},
       );
       logger.log("Created offer.");
 
@@ -100,9 +104,9 @@ class Negotiator<T extends BaseConnection> {
 
         logger.log("Set localDescription: $offer for ${connection.peer}");
 
-        dynamic payload = {
-          "sdp": offer,
-          "type": connection.type,
+        var payload = {
+          "sdp": offer.sdp,
+          "type": connection.type.type,
           "connectionId": connection.connectionId,
           "metadata": connection.metadata,
           "browser": "ds",
@@ -115,11 +119,11 @@ class Negotiator<T extends BaseConnection> {
             ...payload,
             "label": dataConnection.label,
             "reliable": dataConnection.reliable,
-            "serialization": dataConnection.serialization,
+            "serialization": dataConnection.serialization.type,
           };
 
           provider.socket.send({
-            "type": ServerMessageType.Offer,
+            "type": ServerMessageType.Offer.type,
             "payload": payload,
             "dst": connection.peer,
           });
@@ -140,7 +144,7 @@ class Negotiator<T extends BaseConnection> {
     final peerConnection =
         await createPeerConnection(connection.provider.options.config!);
 
-    // this._setupListeners(peerConnection);
+    _setupListeners(peerConnection);
 
     return peerConnection;
   }
@@ -167,11 +171,11 @@ class Negotiator<T extends BaseConnection> {
       logger.log("Received ICE candidates for $peerId: $candidate");
 
       provider.socket.send({
-        "type": ServerMessageType.Candidate,
+        "type": ServerMessageType.Candidate.type,
         "payload": {
-          candidate: candidate,
-          "type": connectionType,
-          connectionId: connectionId,
+          "candidate": candidate.toMap(),
+          "type": connectionType.type,
+          "connectionId": connectionId,
         },
         "dst": peerId,
       });
@@ -278,5 +282,23 @@ class Negotiator<T extends BaseConnection> {
         "add stream ${stream.id} to media connection ${mediaConnection.connectionId}");
 
     mediaConnection.addStream(stream);
+  }
+
+  Future<void> handleCandidate(RTCIceCandidate ice) async {
+    logger.log("handleCandidate: $ice");
+
+    final candidate = ice.candidate;
+    final sdpMLineIndex = ice.sdpMLineIndex;
+    final sdpMid = ice.sdpMid;
+    final peerConnection = connection.peerConnection;
+    final provider = connection.provider;
+
+    try {
+      await peerConnection.addCandidate(ice);
+      logger.log("Added ICE candidate for:${connection.peer}");
+    } catch (err) {
+      provider.emitError(PeerErrorType.WebRTC, err);
+      logger.log("Failed to handleCandidate, $err");
+    }
   }
 }

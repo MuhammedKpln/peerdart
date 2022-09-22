@@ -7,16 +7,13 @@ import 'package:peerdart/src/servermessage.dart';
 import 'package:peerdart/src/util.dart';
 
 class MediaConnection extends BaseConnection {
-  MediaConnection(super.peerId, super.provider, super._options) {
-    _localStream = options._stream;
+  MediaConnection(super.peerId, super.provider, super.options) {
+    _localStream = options!.stream!;
     connectionId =
-        options.connectionId ?? MediaConnection.ID_PREFIX + util.randomToken();
+        options?.connectionId ?? MediaConnection.ID_PREFIX + util.randomToken();
     _negotiator = Negotiator(this);
 
-    _negotiator.startConnection({
-      '_stream': _localStream,
-      'originator': true,
-    });
+    _negotiator.startConnection(options!.copyWith(originator: true));
   }
   static const ID_PREFIX = 'mc_';
   late Negotiator _negotiator;
@@ -41,6 +38,5 @@ class MediaConnection extends BaseConnection {
   }
 
   @override
-  // TODO: implement type
-  ConnectionType get type => throw UnimplementedError();
+  ConnectionType get type => ConnectionType.Media;
 }

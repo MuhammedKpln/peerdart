@@ -13,7 +13,7 @@ abstract class BaseConnection extends EventEmitter {
   late String connectionId;
   late RTCPeerConnection peerConnection;
   dynamic metadata;
-  late Peer provider;
+  late Peer? provider;
   late String peer;
   late PeerConnectOption? options;
   late ConnectionType type;

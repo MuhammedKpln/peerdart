@@ -31,7 +31,7 @@ class DataConnection extends BaseConnection {
 
     _negotiator = Negotiator(this);
 
-    _negotiator.startConnection(
+    _negotiator?.startConnection(
         options?.payload ?? PeerConnectOption(originator: true));
   }
 
@@ -39,19 +39,38 @@ class DataConnection extends BaseConnection {
   static const MAX_BUFFERED_AMOUNT = 8 * 1024 * 1024;
   late String label;
   late bool reliable;
-  late Negotiator _negotiator;
+  late Negotiator? _negotiator;
 
   SerializationType serialization = SerializationType.JSON;
 
-  late RTCDataChannel _dc;
+  late RTCDataChannel? _dc;
 
-  RTCDataChannel get dataChannel {
+  RTCDataChannel? get dataChannel {
     return _dc;
   }
 
   @override
   void close() {
-    // TODO: implement close
+    if (_negotiator != null) {
+      _negotiator?.cleanup();
+      _negotiator = null;
+    }
+    if (provider != null) {
+      provider?.removeConnection(this);
+      provider = null;
+    }
+
+    dataChannel?.onDataChannelState = null;
+    dataChannel?.onMessage = null;
+    _dc = null;
+
+    if (!open) {
+      return;
+    }
+
+    open = false;
+
+    super.emit("close");
   }
 
   @override
@@ -62,11 +81,11 @@ class DataConnection extends BaseConnection {
     switch (message.type) {
       case ServerMessageType.Answer:
         logger.log("Got answer");
-        _negotiator.handleSDP(message.type.type, payload["sdp"]);
+        _negotiator?.handleSDP(message.type.type, payload["sdp"]);
         break;
 
       case ServerMessageType.Candidate:
-        _negotiator.handleCandidate(RTCIceCandidate(
+        _negotiator?.handleCandidate(RTCIceCandidate(
             payload["candidate"]["candidate"],
             payload["candidate"]["sdpMid"],
             payload["candidate"]["sdpMLineIndex"]));
@@ -89,12 +108,12 @@ class DataConnection extends BaseConnection {
   }
 
   void _configureDataChannel() {
-    dataChannel.onDataChannelState = (state) {
+    dataChannel?.onDataChannelState = (state) {
       switch (state) {
         case RTCDataChannelState.RTCDataChannelOpen:
           logger.log('DC#$connectionId dc connection success');
           open = true;
-          emit('open');
+          provider?.emit('open');
           break;
 
         case RTCDataChannelState.RTCDataChannelClosed:
@@ -103,7 +122,7 @@ class DataConnection extends BaseConnection {
           break;
       }
 
-      dataChannel.onMessage = (message) {
+      dataChannel?.onMessage = (message) {
         logger.log('DC#$connectionId dc onmessage:${message.text}');
         _handleDataMessage(message);
       };
@@ -119,7 +138,9 @@ class DataConnection extends BaseConnection {
       deserializedData = jsonDecode(message.text);
     }
 
-    emit('data', null, deserializedData);
+    print(deserializedData);
+
+    provider?.emit('data', null, deserializedData);
   }
 
   void send(dynamic data, {bool? chunked}) {
@@ -127,7 +148,7 @@ class DataConnection extends BaseConnection {
       logger.error(
         "Connection is not open. You should listen for the `open` event before sending messages.",
       );
-      emit(
+      provider?.emit(
         "error",
         Exception(
           "Connection is not open. You should listen for the `open` event before sending messages.",
@@ -137,7 +158,7 @@ class DataConnection extends BaseConnection {
     }
 
     if (serialization == SerializationType.JSON) {
-      dataChannel.send(RTCDataChannelMessage(jsonEncode(data)));
+      dataChannel?.send(RTCDataChannelMessage(jsonEncode(data)));
     }
   }
 }

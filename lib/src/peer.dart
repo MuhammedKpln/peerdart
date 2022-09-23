@@ -145,7 +145,7 @@ class Peer extends EventEmitter {
       case ServerMessageType.Open:
         _lastServerId = id;
         _open = true;
-        emit(ServerMessageType.Open.type, null, id);
+        emit("open", null, id);
         break;
 
       case ServerMessageType.Error:
@@ -383,7 +383,8 @@ class Peer extends EventEmitter {
   }
 
   /// connection: DataConnection / MediaConnection
-  void _removeConnection(dynamic connection) {
+
+  void removeConnection(dynamic connection) {
     final connections = _connections[connection.peer] as List<dynamic>;
 
     final index = connections

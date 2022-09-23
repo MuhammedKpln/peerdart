@@ -112,7 +112,7 @@ class DataConnection extends BaseConnection {
         case RTCDataChannelState.RTCDataChannelOpen:
           logger.log('DC#$connectionId dc connection success');
           open = true;
-          provider?.emit('open');
+          super.emit('open');
           break;
 
         case RTCDataChannelState.RTCDataChannelClosed:
@@ -145,7 +145,7 @@ class DataConnection extends BaseConnection {
       logger.error(
         "Connection is not open. You should listen for the `open` event before sending messages.",
       );
-      provider?.emit(
+      super.emit(
         "error",
         Exception(
           "Connection is not open. You should listen for the `open` event before sending messages.",

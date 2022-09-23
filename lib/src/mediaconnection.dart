@@ -37,6 +37,8 @@ class MediaConnection extends BaseConnection {
     _negotiator?.cleanup();
     _negotiator = null;
 
+    _stopMediaDevice();
+
     _localStream = null;
     _remoteStream = null;
 
@@ -57,6 +59,12 @@ class MediaConnection extends BaseConnection {
     open = false;
 
     super.emit("close");
+  }
+
+  void _stopMediaDevice() {
+    final tracks = _localStream?.getTracks();
+
+    tracks?.forEach((track) => track.stop());
   }
 
   @override

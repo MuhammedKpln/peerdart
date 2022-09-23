@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:messagepack/messagepack.dart' as msgpack;
 
 const _DEFAULT_CONFIG = {
   "iceServers": [
@@ -19,10 +18,6 @@ const _DEFAULT_CONFIG = {
 
 class Util {
   Map<String, dynamic> get defaultConfig => _DEFAULT_CONFIG;
-
-  unpack(Uint8List data) {
-    return msgpack.Unpacker(data).unpackBinary();
-  }
 
   ByteBuffer binaryStringToArrayBuffer(String binary) {
     final byteArray = Uint8List(binary.length);

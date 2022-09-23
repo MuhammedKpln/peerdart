@@ -289,7 +289,7 @@ class Peer extends EventEmitter {
     emitError(type, message);
 
     if (_lastServerId != null) {
-      destroy();
+      dispose();
     } else {
       disconnect();
     }
@@ -301,7 +301,7 @@ class Peer extends EventEmitter {
     emit(SocketEventType.Error.type, null, err);
   }
 
-  void destroy() {
+  void dispose() {
     if (destroyed) {
       return;
     }
@@ -316,6 +316,10 @@ class Peer extends EventEmitter {
   }
 
   void _cleanup() {
+    for (var peer in _connections.keys) {
+      _cleanupPeer(peer);
+      _connections.removeWhere((key, value) => key == peer);
+    }
     socket.clear();
     clear();
   }

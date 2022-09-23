@@ -316,9 +316,8 @@ class Peer extends EventEmitter {
   }
 
   void _cleanup() {
-    for (final event in SocketEventType.values) {
-      socket.removeAllByEvent(event.type);
-    }
+    socket.clear();
+    clear();
   }
 
   void disconnect() {

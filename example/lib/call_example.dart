@@ -49,7 +49,7 @@ class _CallExampleState extends State<CallExample> {
 
   @override
   void dispose() {
-    peer.destroy();
+    peer.dispose();
     _controller.dispose();
     _localRenderer.dispose();
     _remoteRenderer.dispose();

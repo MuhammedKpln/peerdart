@@ -16,6 +16,13 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
   bool connected = false;
 
   @override
+  void dispose() {
+    peer.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
 

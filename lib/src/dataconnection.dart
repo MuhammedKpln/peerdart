@@ -75,7 +75,6 @@ class DataConnection extends BaseConnection {
 
   @override
   void handleMessage(ServerMessage message) {
-    print(message.type);
     final payload = message.payload;
 
     switch (message.type) {
@@ -137,8 +136,6 @@ class DataConnection extends BaseConnection {
     if (datatype == MessageType.text) {
       deserializedData = jsonDecode(message.text);
     }
-
-    print(deserializedData);
 
     provider?.emit('data', null, deserializedData);
   }

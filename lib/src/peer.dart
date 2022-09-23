@@ -189,12 +189,13 @@ class Peer extends EventEmitter {
                 "Offer received for existing Connection ID:$connectionId",
               );
             }
-
             // Create a new connection.
             if (payload["type"] == ConnectionType.Media.type) {
+              final serializedPayload = PeerConnectOption.fromMap(payload);
+
               final data = PeerConnectOption(
                   connectionId: connectionId,
-                  payload: payload,
+                  payload: serializedPayload,
                   metadata: payload["metadata"]);
 
               final mediaConnection = MediaConnection(peerId, this, data);
@@ -225,7 +226,7 @@ class Peer extends EventEmitter {
             }
 
             // Find messages.
-            final messages = _getMessages(connectionId);
+            final messages = getMessages(connectionId);
 
             for (var message in messages) {
               connection.handleMessage(message);
@@ -249,7 +250,7 @@ class Peer extends EventEmitter {
           if (connection != null && connection.peerConnection != null) {
             // Pass it on.
             connection.handleMessage(message);
-          } else if (connectionId) {
+          } else if (connectionId != null) {
             // Store for possible later use
             _storeMessage(connectionId, message);
           } else {
@@ -426,7 +427,7 @@ class Peer extends EventEmitter {
   }
 
   /// Stores messages without a set up connection, to be claimed later. */
-  List<ServerMessage> _getMessages(String connectionId) {
+  List<ServerMessage> getMessages(String connectionId) {
     final messages = _lostMessages[connectionId];
 
     if (messages != null) {

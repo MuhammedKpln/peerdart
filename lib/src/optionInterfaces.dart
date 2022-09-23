@@ -72,7 +72,7 @@ class PeerConnectOption {
       dynamic metadata,
       SerializationType? serialization,
       bool? reliable,
-      dynamic payload,
+      PeerConnectOption? payload,
       MediaStream? stream,
       Function? sdpTransform,
       Map<String, dynamic>? constraints,
@@ -95,8 +95,10 @@ class PeerConnectOption {
       PeerConnectOption(
         label: json["label"],
         metadata: json["metadata"],
-        serialization: SerializationType.values
-            .singleWhere((element) => element.type == json["serialization"]),
+        serialization: json["serialization"] != null
+            ? SerializationType.values
+                .singleWhere((element) => element.type == json["serialization"])
+            : null,
         reliable: json["reliable"],
         sdp: json["sdp"],
         payload: json["payload"] != null
@@ -126,4 +128,8 @@ abstract class CallOption {
         "metadata": metadata,
         "sdpTransform": sdpTransform,
       };
+}
+
+abstract class AnswerOption {
+  Function? sdpTransform;
 }

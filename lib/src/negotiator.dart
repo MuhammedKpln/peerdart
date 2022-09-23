@@ -45,14 +45,13 @@ class Negotiator<T extends BaseConnection> {
     logger.log("Setting remote description $sdp");
 
     try {
-      await peerConnection.setRemoteDescription(description);
+      await peerConnection?.setRemoteDescription(description);
       logger.log("Set remoteDescription:$type for:${connection.peer}");
       if (type == "OFFER") {
         await _makeAnswer();
       }
     } catch (err) {
-      print(err);
-      provider.emitError(PeerErrorType.WebRTC, err);
+      provider?.emitError(PeerErrorType.WebRTC, err);
       logger.log("Failed to setRemoteDescription, $err");
     }
   }
@@ -62,18 +61,18 @@ class Negotiator<T extends BaseConnection> {
     final provider = connection.provider;
 
     try {
-      final answer = await peerConnection.createAnswer();
+      final answer = await peerConnection?.createAnswer();
       logger.log("Created answer.");
 
       try {
-        await peerConnection.setLocalDescription(answer);
+        await peerConnection?.setLocalDescription(answer!);
 
         logger.log("Set localDescription: $answer for ${connection.peer}");
 
-        provider.socket.send({
+        provider?.socket.send({
           "type": ServerMessageType.Answer.type,
           "payload": {
-            "sdp": answer.sdp,
+            "sdp": answer!.sdp,
             "type": connection.type.type,
             "connectionId": connection.connectionId,
             "browser": "s",
@@ -81,7 +80,7 @@ class Negotiator<T extends BaseConnection> {
           "dst": connection.peer,
         });
       } catch (err) {
-        provider.emitError(PeerErrorType.WebRTC, err);
+        provider?.emitError(PeerErrorType.WebRTC, err);
         logger.log("Failed to setLocalDescription, $err");
       }
     } catch (e) {
@@ -94,9 +93,15 @@ class Negotiator<T extends BaseConnection> {
     final provider = connection.provider;
 
     try {
-      final offer = await peerConnection.createOffer(
-        connection.options?.constraints ?? {},
-      );
+      RTCSessionDescription offer;
+
+      if (connection.options?.constraints != null) {
+        offer =
+            await peerConnection!.createOffer(connection.options!.constraints!);
+      } else {
+        offer = await peerConnection!.createOffer();
+      }
+
       logger.log("Created offer.");
 
       try {
@@ -121,28 +126,28 @@ class Negotiator<T extends BaseConnection> {
             "reliable": dataConnection.reliable,
             "serialization": dataConnection.serialization.type,
           };
-
-          provider.socket.send({
-            "type": ServerMessageType.Offer.type,
-            "payload": payload,
-            "dst": connection.peer,
-          });
         }
+
+        provider?.socket.send({
+          "type": ServerMessageType.Offer.type,
+          "payload": payload,
+          "dst": connection.peer,
+        });
       } catch (e) {
-        provider.emitError(PeerErrorType.WebRTC, e);
+        provider?.emitError(PeerErrorType.WebRTC, e);
         logger.log("Failed to setLocalDescription, $e");
       }
     } catch (err) {
-      provider.emitError(PeerErrorType.WebRTC, err);
+      provider?.emitError(PeerErrorType.WebRTC, err);
       logger.log("Failed to createOffer, $err");
     }
   }
 
   Future<RTCPeerConnection> _startPeerConnection() async {
-    logger.log("Creating RTCPeerConnection.");
+    logger.log("Creating RTCpeerConnection?.");
 
     final peerConnection =
-        await createPeerConnection(connection.provider.options.config!);
+        await createPeerConnection(connection.provider?.options.config ?? {});
 
     _setupListeners(peerConnection);
 
@@ -170,7 +175,7 @@ class Negotiator<T extends BaseConnection> {
     peerConnection.onIceCandidate = (candidate) {
       logger.log("Received ICE candidates for $peerId: $candidate");
 
-      provider.socket.send({
+      provider?.socket.send({
         "type": ServerMessageType.Candidate.type,
         "payload": {
           "candidate": candidate.toMap(),
@@ -234,7 +239,7 @@ class Negotiator<T extends BaseConnection> {
       final dataChannel = channel;
 
       final DataConnection connection =
-          provider.getConnection(peerId, connectionId);
+          provider?.getConnection(peerId, connectionId);
 
       connection.initialize(dataChannel);
     };
@@ -246,7 +251,7 @@ class Negotiator<T extends BaseConnection> {
       logger.log("Received remote stream");
 
       final stream = track.streams[0];
-      final connection = provider.getConnection(peerId, connectionId);
+      final connection = provider?.getConnection(peerId, connectionId);
 
       if (connection.type == ConnectionType.Media) {
         final mediaConnection = connection as MediaConnection;
@@ -260,7 +265,7 @@ class Negotiator<T extends BaseConnection> {
     logger.log("Cleaning up PeerConnection to ${connection.peer}");
 
     final peerConnection = connection.peerConnection;
-    final peerConnectionNotClosed = peerConnection.signalingState != "closed";
+    final peerConnectionNotClosed = peerConnection?.signalingState != "closed";
     bool dataChannelNotClosed = false;
 
     if (peerConnection == null) {
@@ -271,7 +276,7 @@ class Negotiator<T extends BaseConnection> {
       peerConnection.close();
     }
 
-    connection.peerConnection.dispose();
+    connection.peerConnection?.dispose();
   }
 
   void _addStreamToMediaConnection(
@@ -294,10 +299,10 @@ class Negotiator<T extends BaseConnection> {
     final provider = connection.provider;
 
     try {
-      await peerConnection.addCandidate(ice);
+      await peerConnection?.addCandidate(ice);
       logger.log("Added ICE candidate for:${connection.peer}");
     } catch (err) {
-      provider.emitError(PeerErrorType.WebRTC, err);
+      provider?.emitError(PeerErrorType.WebRTC, err);
       logger.log("Failed to handleCandidate, $err");
     }
   }

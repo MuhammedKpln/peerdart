@@ -7,3 +7,4 @@ export 'src/peer.dart';
 export 'src/enums.dart';
 export 'src/optionInterfaces.dart';
 export 'src/dataconnection.dart';
+export 'src/mediaconnection.dart';

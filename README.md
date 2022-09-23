@@ -1,39 +1,100 @@
-<!-- 
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# PeerDart: Simple peer-to-peer with WebRTC
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages). 
+PeerDart provides a complete, configurable, and easy-to-use peer-to-peer API built on top of WebRTC, supporting both data channels and media streams.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages). 
--->
+PeerDart **mirrors** the design of peerjs. Find the documentation [here](https://peerjs.com/docs)..
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
 
-## Features
+## Status
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+- [x] Alpha: Under heavy development
+- [x] Public Alpha: Ready for testing. But go easy on us, there will be bugs and missing functionality.
+- [ ] Public Beta: Stable. No breaking changes expected in this version but possible bugs.
+- [ ] Public: Production-ready
 
-## Getting started
+## Live Example
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Here's an example application that uses both media and data connections: [Example](https://peerdart.netlify.app/)
 
-## Usage
+## Setup
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+
+**Create a Peer**
 
 ```dart
-const like = 'sample';
+final Peer peer = Peer("pick-an-id");
+// You can pick your own id or omit the id if you want to get a random one from the server.
 ```
 
-## Additional information
+## Data connections
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+**Connect**
+
+```dart
+const conn = peer.connect("another-peers-id");
+conn.on("open", null, (ev,_) => {
+	conn.send("hi!");
+});
+```
+
+**Receive**
+
+```dart
+peer.on("connection", null, (ev, _) => {
+	conn.on("data", null, (event, _) => {
+		// Will print 'hi!'
+		console.log(event.eventData);
+	});
+	conn.on("open", null, () => {
+		conn.send("hello!");
+	});
+});
+```
+
+## Media calls
+
+**Call**
+
+```dart
+final mediaStream = await navigator.mediaDevices
+        .getUserMedia({"video": true, "audio": false});
+
+    final conn = peer.call("peerId", mediaStream);
+
+    conn.on("stream", null, (ev, _) {
+        _localRenderer.srcObject = ev.eventData as MediaConnection
+        // Do some stuff with stream
+});
+```
+
+**Answer**
+
+```dart
+peer.on("call", null, (ev, context) async {
+    final call = ev.eventData as MediaConnection;
+    final mediaStream = await navigator.mediaDevices
+        .getUserMedia({"video": true, "audio": false});
+
+    call.answer(mediaStream);
+
+    call.on("stream", null, (ev, _) async {
+    _localRenderer.srcObject = mediaStream;
+    _remoteRenderer.srcObject = ev.eventData as MediaStream
+
+    // Do some stuff.
+    });
+});
+```
+
+## Support
+Works both on mobile and web browsers (Chrome tested.).
+
+## Links
+
+### [Documentation / API Reference](https://peerjs.com/docs/)
+
+### [PeerServer](https://github.com/peers/peerjs-server)
+
+## License
+
+PeerDart is licensed under the [MIT License](https://tldrlegal.com/l/mit).

@@ -1,7 +1,7 @@
 name: peerdart
-description: A starting point for Dart libraries or applications.
-version: 1.0.0
-# homepage: https://www.example.com
+description: Simple peer-to-peer with WebRTC for Dart. PeerJS port for Flutter.
+version: 0.1.0
+homepage: https://github.com/MuhammedKpln/peerdart
 
 environment:
   sdk: '>=2.18.1 <3.0.0'
@@ -12,7 +12,7 @@ dependencies:
   flutter_webrtc: ^0.9.6
   eventify: ^1.0.1
   web_socket_channel: ^2.2.0
-  messagepack: ^0.2.1
+
 
 dev_dependencies:
   lints: ^2.0.0

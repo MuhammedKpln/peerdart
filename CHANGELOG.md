@@ -1,3 +1,8 @@
+## 0.2.0
+
+- Reconnect functionality.
+
+
 ## 0.1.2
 
 - Fix crash on dispose

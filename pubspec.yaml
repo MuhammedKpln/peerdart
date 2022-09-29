@@ -1,6 +1,6 @@
 name: peerdart
 description: Simple peer-to-peer with WebRTC for Dart. PeerJS port for Flutter.
-version: 0.1.2
+version: 0.2.0
 homepage: https://github.com/MuhammedKpln/peerdart
 repository: https://github.com/MuhammedKpln/peerdart
 

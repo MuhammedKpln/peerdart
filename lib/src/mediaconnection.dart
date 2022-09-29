@@ -42,11 +42,6 @@ class MediaConnection extends BaseConnection {
     _localStream = null;
     _remoteStream = null;
 
-    if (provider != null) {
-      provider?.removeConnection(this);
-      provider = null;
-    }
-
     // TODO: set stream to null when done.
     // if (this.options && this.options._stream) {
     // 	this.options._stream = null;

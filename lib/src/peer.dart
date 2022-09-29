@@ -316,11 +316,15 @@ class Peer extends EventEmitter {
   }
 
   void _cleanup() {
+    final List<String> toRemove = [];
     for (var peer in _connections.keys) {
+      toRemove.add(peer);
+    }
+    for (var peer in toRemove) {
       _cleanupPeer(peer);
       _connections.removeWhere((key, value) => key == peer);
     }
-    socket.clear();
+
     clear();
   }
 

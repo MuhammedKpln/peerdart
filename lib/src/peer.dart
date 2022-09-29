@@ -328,6 +328,33 @@ class Peer extends EventEmitter {
     clear();
   }
 
+  /// Attempts to reconnect with the same ID. */
+  void reconnect() {
+    if (disconnected && !destroyed) {
+      logger.log(
+        "Attempting reconnection to server with ID $_lastServerId",
+      );
+      _disconnected = false;
+      _initialize(_lastServerId!);
+    } else if (destroyed) {
+      throw Exception(
+        "This peer cannot reconnect to the server. It has already been destroyed.",
+      );
+    } else if (!disconnected && !open) {
+      logger.error(
+        "In a hurry? We're still trying to make the initial connection!",
+      );
+    } else {
+      throw Exception(
+        "Peer $id cannot reconnect because it is not disconnected from the server!",
+      );
+    }
+  }
+
+  /// Disconnects the Peer's connection to the PeerServer. Does not close any
+  ///  active connections.
+  /// Warning: The peer can no longer create or accept connections after being
+  ///  disconnected. It also cannot reconnect to the server.
   void disconnect() {
     if (disconnected) {
       return;

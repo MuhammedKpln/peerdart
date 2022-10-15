@@ -1,11 +1,11 @@
-import 'package:eventify/eventify.dart';
+import 'package:events_emitter/emitters/stream_event_emitter.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:peerdart/src/enums.dart';
 import 'package:peerdart/src/optionInterfaces.dart';
 import 'package:peerdart/src/peer.dart';
 import 'package:peerdart/src/servermessage.dart';
 
-abstract class BaseConnection extends EventEmitter {
+abstract class BaseConnection extends StreamEventEmitter {
   BaseConnection(this.peer, this.provider, this.options) {
     metadata = options?.metadata;
   }
@@ -18,6 +18,6 @@ abstract class BaseConnection extends EventEmitter {
   late PeerConnectOption? options;
   late ConnectionType type;
 
-  void close();
+  void dispose();
   void handleMessage(ServerMessage message);
 }

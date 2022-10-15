@@ -29,11 +29,12 @@ class MediaConnection extends BaseConnection {
     _remoteStream = remoteStream;
     // provider?.emit('stream', null, remoteStream); // Should we call this `open`?
     // emit('stream', null, remoteStream); // Should we call this `open`?
-    super.emit('stream', null, remoteStream); // Should we call this `open`?
+    super.emit<MediaStream>(
+        'stream', remoteStream); // Should we call this `open`?
   }
 
   @override
-  void close() {
+  void dispose() {
     _negotiator?.cleanup();
     _negotiator = null;
 
@@ -53,7 +54,7 @@ class MediaConnection extends BaseConnection {
 
     open = false;
 
-    super.emit("close");
+    super.emit<void>("close", null);
   }
 
   void _stopMediaDevice() {

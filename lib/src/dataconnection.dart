@@ -50,7 +50,7 @@ class DataConnection extends BaseConnection {
   }
 
   @override
-  void close() {
+  void dispose() {
     if (_negotiator != null) {
       _negotiator?.cleanup();
       _negotiator = null;
@@ -66,7 +66,7 @@ class DataConnection extends BaseConnection {
 
     open = false;
 
-    super.emit("close");
+    super.emit<void>("close", null);
   }
 
   @override
@@ -108,7 +108,7 @@ class DataConnection extends BaseConnection {
         case RTCDataChannelState.RTCDataChannelOpen:
           logger.log('DC#$connectionId dc connection success');
           open = true;
-          super.emit('open');
+          super.emit<void>('open', null);
           break;
 
         case RTCDataChannelState.RTCDataChannelClosed:
@@ -127,13 +127,11 @@ class DataConnection extends BaseConnection {
   void _handleDataMessage(RTCDataChannelMessage message) {
     final datatype = message.type;
 
-    dynamic deserializedData;
-
     if (datatype == MessageType.text) {
-      deserializedData = jsonDecode(message.text);
-    }
+      dynamic deserializedData = jsonDecode(message.text);
 
-    provider?.emit('data', null, deserializedData);
+      provider?.emit('data', deserializedData);
+    }
   }
 
   void send(dynamic data, {bool? chunked}) {

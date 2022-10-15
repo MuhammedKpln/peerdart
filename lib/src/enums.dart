@@ -69,3 +69,15 @@ enum LogLevel {
   const LogLevel(this.level);
   final int level;
 }
+
+enum PeerEventListener {
+  open("open"),
+  close("close"),
+  stream("stream"),
+  connection("connection"),
+  call("call"),
+  data("data");
+
+  final String event;
+  const PeerEventListener(this.event);
+}

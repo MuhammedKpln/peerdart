@@ -196,35 +196,32 @@ class Negotiator<T extends BaseConnection> {
           logger.log(
             "iceConnectionState is failed, closing connections to $peerId",
           );
-          connection.emit(
+          connection.emit<Exception>(
             "error",
-            null,
             Exception("${"Negotiation of connection to $peerId"} failed."),
           );
-          connection.close();
+          connection.dispose();
           break;
         case RTCIceConnectionState.RTCIceConnectionStateDisconnected:
           logger.log(
             "iceConnectionState changed to disconnected on the connection with $peerId",
           );
-          connection.close();
+          connection.dispose();
           break;
         case RTCIceConnectionState.RTCIceConnectionStateClosed:
           logger.log(
             "iceConnectionState is closed, closing connections to $peerId",
           );
-          connection.emit(
+          connection.emit<Exception>(
             "error",
-            null,
             Exception("Connection to $peerId closed."),
           );
-          connection.close();
+          connection.dispose();
           break;
       }
 
-      connection.emit(
+      connection.emit<RTCIceConnectionState?>(
         "iceStateChanged",
-        null,
         peerConnection.iceConnectionState,
       );
     };

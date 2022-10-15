@@ -1,18 +1,17 @@
 import 'dart:convert';
 
-import 'package:eventify/eventify.dart';
+import 'package:events_emitter/emitters/stream_event_emitter.dart';
 import 'package:peerdart/src/logger.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'enums.dart';
 import 'optionInterfaces.dart';
 
-class Socket extends EventEmitter {
+class Socket extends StreamEventEmitter {
   bool _disconnected = true;
   late String? _id;
   late List<Map<String, dynamic>> _messagesQueue = [];
   late WebSocketChannel? _socket;
-  late dynamic _wsPingTimer;
   late Uri _baseUrl;
   PeerOptions options;
 
@@ -52,7 +51,7 @@ class Socket extends EventEmitter {
         return;
       }
 
-      emit(SocketEventType.Message.type, null, data);
+      emit<Map<String, dynamic>>(SocketEventType.Message.type, data);
     }, onDone: () {
       if (_disconnected) {
         return;
@@ -62,7 +61,7 @@ class Socket extends EventEmitter {
 
       _cleanup();
 
-      emit(SocketEventType.Disconnected.type);
+      emit<void>(SocketEventType.Disconnected.type, null);
     });
 
     _sendQueuedMessages();
@@ -73,8 +72,7 @@ class Socket extends EventEmitter {
   }
 
   void _scheduleHeartbeat() {
-    _wsPingTimer = Future.delayed(
-        Duration(milliseconds: options.pingInterval ?? 5000),
+    Future.delayed(Duration(milliseconds: options.pingInterval ?? 5000),
         () => _sendHeartbeat());
   }
 
@@ -91,7 +89,7 @@ class Socket extends EventEmitter {
     _scheduleHeartbeat();
   }
 
-  void close() {
+  void closeConnection() {
     if (_disconnected) {
       return;
     }
@@ -116,7 +114,7 @@ class Socket extends EventEmitter {
     }
 
     if (data["type"] == null) {
-      emit(SocketEventType.Error.type, null, "Invalid message");
+      emit<String>(SocketEventType.Error.type, "Invalid message");
       return;
     }
 
@@ -147,6 +145,7 @@ class Socket extends EventEmitter {
     _disconnected = true;
     _socket?.sink.close();
 
-    super.clear();
+    // Close all the emitters
+    close();
   }
 }

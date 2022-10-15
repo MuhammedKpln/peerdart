@@ -1,4 +1,4 @@
-import 'package:eventify/eventify.dart';
+import 'package:events_emitter/emitters/stream_event_emitter.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:peerdart/src/api.dart';
 import 'package:peerdart/src/baseconnection.dart';
@@ -12,7 +12,7 @@ import 'package:peerdart/src/servermessage.dart';
 import 'package:peerdart/src/socket.dart';
 import 'package:peerdart/src/util.dart';
 
-class Peer extends EventEmitter {
+class Peer extends StreamEventEmitter {
   Peer({String? id, PeerOptions? options}) {
     String? userId = id;
 
@@ -29,6 +29,7 @@ class Peer extends EventEmitter {
       initOptions = initOptions.merge(options);
     }
 
+    print(initOptions.port);
     _options = initOptions;
 
     // Set path correctly.
@@ -103,17 +104,19 @@ class Peer extends EventEmitter {
   Socket _createServerConnection() {
     final socket = Socket(_options);
 
-    socket.on(SocketEventType.Message.type, null, (ev, context) {
-      final ctx = ServerMessage.fromMap(ev.eventData as Map<String, dynamic>);
+    socket
+        .on<Map<String, dynamic>>(SocketEventType.Message.type)
+        .listen((data) {
+      final ctx = ServerMessage.fromMap(data);
 
       _handleMessage(ctx);
     });
 
-    socket.on(SocketEventType.Error.type, null, (ev, context) {
-      _abort(PeerErrorType.SocketError, context);
+    socket.on<String>(SocketEventType.Error.type).listen((event) {
+      _abort(PeerErrorType.SocketError, event);
     });
 
-    socket.on(SocketEventType.Disconnected.type, null, (ev, context) {
+    socket.on(SocketEventType.Disconnected.type).listen((event) {
       if (disconnected) {
         return;
       }
@@ -122,7 +125,7 @@ class Peer extends EventEmitter {
       disconnect();
     });
 
-    socket.on(SocketEventType.Close.type, null, (ev, context) {
+    socket.on(SocketEventType.Close.type).listen((event) {
       if (disconnected) {
         return;
       }
@@ -145,7 +148,8 @@ class Peer extends EventEmitter {
       case ServerMessageType.Open:
         _lastServerId = id;
         _open = true;
-        emit("open", null, id);
+
+        emit<String?>("open", id);
         break;
 
       case ServerMessageType.Error:
@@ -202,7 +206,7 @@ class Peer extends EventEmitter {
               connection = mediaConnection;
 
               _addConnection(peerId, mediaConnection: connection);
-              emit("call", null, mediaConnection);
+              emit<MediaConnection>("call", mediaConnection);
             } else if (payload["type"] == ConnectionType.Data.type) {
               final serializedPayload = PeerConnectOption.fromMap(payload);
 
@@ -219,7 +223,7 @@ class Peer extends EventEmitter {
               final dataConnection = DataConnection(peerId, this, data);
               connection = dataConnection;
               _addConnection(peerId, dataConnection: connection);
-              emit("connection", null, dataConnection);
+              emit<DataConnection>("connection", dataConnection);
             } else {
               logger.warn("Received malformed connection type:${payload.type}");
               return;
@@ -298,7 +302,7 @@ class Peer extends EventEmitter {
   void emitError(PeerErrorType type, dynamic err) {
     logger.error('Error: $err');
 
-    emit(SocketEventType.Error.type, null, err);
+    emit<dynamic>(SocketEventType.Error.type, err);
   }
 
   void dispose() {
@@ -308,11 +312,12 @@ class Peer extends EventEmitter {
     logger.log('Destroy peer with ID:$id');
 
     disconnect();
-    _cleanup();
 
     _destroyed = true;
 
-    emit('close');
+    emit<void>('close', null);
+
+    _cleanup();
   }
 
   void _cleanup() {
@@ -325,7 +330,7 @@ class Peer extends EventEmitter {
       _connections.removeWhere((key, value) => key == peer);
     }
 
-    clear();
+    close();
   }
 
   /// Attempts to reconnect with the same ID. */
@@ -370,7 +375,7 @@ class Peer extends EventEmitter {
     _lastServerId = currentId;
     _id = null;
 
-    emit(SocketEventType.Disconnected.type, null, currentId);
+    emit<String?>(SocketEventType.Disconnected.type, currentId);
   }
 
   DataConnection connect(String peer, {PeerConnectOption? options}) {
@@ -456,7 +461,7 @@ class Peer extends EventEmitter {
     if (connections == null) return;
 
     for (var connection in connections) {
-      connection?.close();
+      connection?.dispose();
     }
   }
 

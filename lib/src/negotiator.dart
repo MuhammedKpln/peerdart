@@ -207,6 +207,7 @@ class Negotiator<T extends BaseConnection> {
           logger.log(
             "iceConnectionState changed to disconnected on the connection with $peerId",
           );
+          connection.close();
           break;
         case RTCIceConnectionState.RTCIceConnectionStateClosed:
           logger.log(
@@ -292,9 +293,6 @@ class Negotiator<T extends BaseConnection> {
   Future<void> handleCandidate(RTCIceCandidate ice) async {
     logger.log("handleCandidate: $ice");
 
-    final candidate = ice.candidate;
-    final sdpMLineIndex = ice.sdpMLineIndex;
-    final sdpMid = ice.sdpMid;
     final peerConnection = connection.peerConnection;
     final provider = connection.provider;
 

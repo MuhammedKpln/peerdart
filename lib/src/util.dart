@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-const _DEFAULT_CONFIG = {
+const _defaultConfig = {
   "iceServers": [
     {"urls": "stun:stun.l.google.com:19302"},
     {
@@ -17,7 +17,7 @@ const _DEFAULT_CONFIG = {
 };
 
 class Util {
-  Map<String, dynamic> get defaultConfig => _DEFAULT_CONFIG;
+  Map<String, dynamic> get defaultConfig => _defaultConfig;
 
   ByteBuffer binaryStringToArrayBuffer(String binary) {
     final byteArray = Uint8List(binary.length);

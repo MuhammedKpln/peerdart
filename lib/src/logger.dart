@@ -1,6 +1,6 @@
 import 'enums.dart';
 
-const LOG_PREFIX = 'PeerDart: ';
+const _logPrefix = 'PeerDart: ';
 
 /*
 Prints log messages depending on the debug level passed in. Defaults to 0.
@@ -36,7 +36,7 @@ class Logger {
   }
 
   Function _print = (LogLevel logLevel, dynamic message) {
-    var msg = '$LOG_PREFIX ${message.toString()}';
+    var msg = '$_logPrefix ${message.toString()}';
 
     if (logLevel == LogLevel.All) {
       print(msg);

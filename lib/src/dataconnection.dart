@@ -2,17 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:peerdart/src/baseconnection.dart';
-import 'package:peerdart/src/config.dart';
 import 'package:peerdart/src/enums.dart';
 import 'package:peerdart/src/logger.dart';
 import 'package:peerdart/src/negotiator.dart';
-import 'package:peerdart/src/optionInterfaces.dart';
+import 'package:peerdart/src/option_interfaces.dart';
 import 'package:peerdart/src/servermessage.dart';
+import 'package:peerdart/src/util.dart';
 
 class DataConnection extends BaseConnection {
   DataConnection(super.peerId, super.provider, super.options) {
-    connectionId = options?.connectionId ??
-        DataConnection.ID_PREFIX + PeerConfig.RANDOM_TOKEN();
+    connectionId = options?.connectionId ?? _idPrefix + util.randomToken();
 
     label = options?.label ?? connectionId;
     serialization = options?.serialization ?? SerializationType.JSON;
@@ -35,8 +34,8 @@ class DataConnection extends BaseConnection {
         options?.payload ?? PeerConnectOption(originator: true));
   }
 
-  static const ID_PREFIX = 'dc_';
-  static const MAX_BUFFERED_AMOUNT = 8 * 1024 * 1024;
+  final _idPrefix = 'dc_';
+
   late String label;
   late bool reliable;
   late Negotiator? _negotiator;
@@ -115,6 +114,12 @@ class DataConnection extends BaseConnection {
           logger.log('DC#$connectionId dc closed for:$peer');
           closeRequest();
           dispose();
+          break;
+        case RTCDataChannelState.RTCDataChannelConnecting:
+          // TODO: Handle this case.
+          break;
+        case RTCDataChannelState.RTCDataChannelClosing:
+          // TODO: Handle this case.
           break;
       }
 

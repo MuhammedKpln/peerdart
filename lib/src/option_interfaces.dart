@@ -1,5 +1,6 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:peerdart/peerdart.dart';
+import 'package:peerdart/src/util.dart';
 
 import 'config.dart';
 
@@ -27,7 +28,7 @@ class PeerOptions {
     this.secure = true,
     this.pingInterval,
   }) {
-    token = PeerConfig.RANDOM_TOKEN();
+    token = util.randomToken();
   }
 
   PeerOptions merge(PeerOptions options) => PeerOptions(

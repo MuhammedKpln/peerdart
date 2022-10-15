@@ -7,7 +7,7 @@ import 'package:peerdart/src/dataconnection.dart';
 import 'package:peerdart/src/enums.dart';
 import 'package:peerdart/src/logger.dart';
 import 'package:peerdart/src/mediaconnection.dart';
-import 'package:peerdart/src/optionInterfaces.dart';
+import 'package:peerdart/src/option_interfaces.dart';
 import 'package:peerdart/src/servermessage.dart';
 import 'package:peerdart/src/socket.dart';
 import 'package:peerdart/src/util.dart';
@@ -21,7 +21,7 @@ class Peer extends StreamEventEmitter {
         host: PeerConfig.CLOUD_HOST,
         port: PeerConfig.CLOUD_PORT,
         path: "/",
-        key: _DEFAULT_KEY,
+        key: _defaultKey,
         token: util.randomToken(),
         config: PeerConfig.defaultConfig);
 
@@ -56,7 +56,7 @@ class Peer extends StreamEventEmitter {
     }
   }
 
-  static const _DEFAULT_KEY = PeerConfig.DEFAULT_KEY;
+  final _defaultKey = PeerConfig.DEFAULT_KEY;
   late PeerOptions _options;
   late API _api;
   late Socket _socket;

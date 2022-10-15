@@ -9,8 +9,7 @@ import 'package:peerdart/src/util.dart';
 class MediaConnection extends BaseConnection {
   MediaConnection(super.peerId, super.provider, super.options) {
     _localStream = options?.stream;
-    connectionId =
-        options?.connectionId ?? MediaConnection.ID_PREFIX + util.randomToken();
+    connectionId = options?.connectionId ?? _idPrefix + util.randomToken();
     _negotiator = Negotiator(this);
 
     if (_localStream != null) {
@@ -18,9 +17,10 @@ class MediaConnection extends BaseConnection {
           options!.copyWith(originator: true, stream: _localStream));
     }
   }
-  static const ID_PREFIX = 'mc_';
+  final _idPrefix = 'mc_';
   late Negotiator? _negotiator;
   late MediaStream? _localStream;
+  // ignore: unused_field
   late MediaStream? _remoteStream;
 
   void addStream(MediaStream remoteStream) {
@@ -66,7 +66,6 @@ class MediaConnection extends BaseConnection {
 
   @override
   void handleMessage(ServerMessage message) {
-    final type = message.type;
     final payload = message.payload;
 
     switch (message.type) {

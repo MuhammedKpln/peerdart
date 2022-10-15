@@ -2,7 +2,7 @@ import 'package:http/http.dart';
 import 'package:peerdart/src/config.dart';
 import 'package:http/http.dart' as http;
 import 'package:peerdart/src/logger.dart';
-import 'package:peerdart/src/optionInterfaces.dart';
+import 'package:peerdart/src/option_interfaces.dart';
 
 class API {
   late PeerOptions _options;

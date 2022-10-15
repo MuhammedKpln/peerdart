@@ -5,7 +5,7 @@ import 'package:peerdart/src/logger.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'enums.dart';
-import 'optionInterfaces.dart';
+import 'option_interfaces.dart';
 
 class Socket extends StreamEventEmitter {
   bool _disconnected = true;

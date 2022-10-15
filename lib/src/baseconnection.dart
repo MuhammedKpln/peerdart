@@ -1,7 +1,7 @@
 import 'package:events_emitter/emitters/stream_event_emitter.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:peerdart/src/enums.dart';
-import 'package:peerdart/src/optionInterfaces.dart';
+import 'package:peerdart/src/option_interfaces.dart';
 import 'package:peerdart/src/peer.dart';
 import 'package:peerdart/src/servermessage.dart';
 

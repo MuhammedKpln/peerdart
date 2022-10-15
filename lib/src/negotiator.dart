@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:peerdart/src/baseconnection.dart';
 import 'package:peerdart/src/dataconnection.dart';
-import 'package:peerdart/src/optionInterfaces.dart';
+import 'package:peerdart/src/option_interfaces.dart';
 
 import 'enums.dart';
 import 'logger.dart';
@@ -221,6 +221,18 @@ class Negotiator<T extends BaseConnection> {
           connection.closeRequest();
           connection.dispose();
           break;
+        case RTCIceConnectionState.RTCIceConnectionStateNew:
+          // TODO: Handle this case.
+          break;
+        case RTCIceConnectionState.RTCIceConnectionStateChecking:
+          // TODO: Handle this case.
+          break;
+        case RTCIceConnectionState.RTCIceConnectionStateConnected:
+          // TODO: Handle this case.
+          break;
+        case RTCIceConnectionState.RTCIceConnectionStateCount:
+          // TODO: Handle this case.
+          break;
       }
 
       connection.emit<RTCIceConnectionState?>(
@@ -266,7 +278,8 @@ class Negotiator<T extends BaseConnection> {
     logger.log("Cleaning up PeerConnection to ${connection.peer}");
 
     final peerConnection = connection.peerConnection;
-    final peerConnectionNotClosed = peerConnection?.signalingState != "closed";
+    final peerConnectionNotClosed = peerConnection?.signalingState !=
+        RTCSignalingState.RTCSignalingStateClosed;
     bool dataChannelNotClosed = false;
 
     if (peerConnection == null) {

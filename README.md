@@ -32,23 +32,26 @@ final Peer peer = Peer("pick-an-id");
 
 ```dart
 const conn = peer.connect("another-peers-id");
-conn.on("open", null, (ev,_) => {
-	conn.send("hi!");
-});
+
+conn.on("open").listen((name) {
+    conn.send("hi!");
+})
 ```
 
 **Receive**
 
 ```dart
-peer.on("connection", null, (ev, _) => {
-	conn.on("data", null, (event, _) => {
-		// Will print 'hi!'
-		console.log(event.eventData);
-	});
-	conn.on("open", null, () => {
-		conn.send("hello!");
-	});
-});
+peer.on<DataConnection>("connection").listen((connection) {
+
+    // On peer closed.
+    conn.on("close").listen((event) {
+        setState(() {
+            connected = false;
+        });
+    });
+
+    // ....
+})
 ```
 
 ## Media calls
@@ -61,30 +64,49 @@ final mediaStream = await navigator.mediaDevices
 
     final conn = peer.call("peerId", mediaStream);
 
-    conn.on("stream", null, (ev, _) {
-        _localRenderer.srcObject = ev.eventData as MediaConnection
-        // Do some stuff with stream
+    // Do some stuff with stream
+    conn.on<MediaStream>("stream").listen((event) {
+      _remoteRenderer.srcObject = event;
+      _localRenderer.srcObject = mediaStream;
+
+      setState(() {
+        inCall = true;
+      });
+    });
 });
 ```
 
 **Answer**
 
 ```dart
-peer.on("call", null, (ev, context) async {
-    final call = ev.eventData as MediaConnection;
+peer.on<MediaConnection>("call").listen((call) async {
     final mediaStream = await navigator.mediaDevices
         .getUserMedia({"video": true, "audio": false});
 
     call.answer(mediaStream);
 
-    call.on("stream", null, (ev, _) async {
-    _localRenderer.srcObject = mediaStream;
-    _remoteRenderer.srcObject = ev.eventData as MediaStream
 
-    // Do some stuff.
+    // on peer closed
+    call.on("close").listen((event) {
+        setState(() {
+            inCall = false;
+        });
+    });
+
+    // Get peer stream
+    call.on<MediaStream>("stream").listen((event) {
+        _localRenderer.srcObject = mediaStream;
+        _remoteRenderer.srcObject = event;
+
+        setState(() {
+            inCall = true;
+        });
     });
 });
 ```
+
+## More examples
+See more at [example.](example/)
 
 ## Support
 Works both on mobile and web browsers (Chrome tested.).

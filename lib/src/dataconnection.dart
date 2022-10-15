@@ -55,10 +55,6 @@ class DataConnection extends BaseConnection {
       _negotiator?.cleanup();
       _negotiator = null;
     }
-    if (provider != null) {
-      provider?.removeConnection(this);
-      provider = null;
-    }
 
     dataChannel?.onDataChannelState = null;
     dataChannel?.onMessage = null;

@@ -29,7 +29,6 @@ class Peer extends StreamEventEmitter {
       initOptions = initOptions.merge(options);
     }
 
-    print(initOptions.port);
     _options = initOptions;
 
     // Set path correctly.
@@ -315,8 +314,6 @@ class Peer extends StreamEventEmitter {
 
     _destroyed = true;
 
-    emit<void>('close', null);
-
     _cleanup();
   }
 
@@ -325,6 +322,7 @@ class Peer extends StreamEventEmitter {
     for (var peer in _connections.keys) {
       toRemove.add(peer);
     }
+
     for (var peer in toRemove) {
       _cleanupPeer(peer);
       _connections.removeWhere((key, value) => key == peer);
@@ -370,7 +368,7 @@ class Peer extends StreamEventEmitter {
     _disconnected = true;
     _open = false;
 
-    socket.close();
+    socket.dispose();
 
     _lastServerId = currentId;
     _id = null;

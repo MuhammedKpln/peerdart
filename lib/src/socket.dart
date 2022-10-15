@@ -89,7 +89,7 @@ class Socket extends StreamEventEmitter {
     _scheduleHeartbeat();
   }
 
-  void closeConnection() {
+  void dispose() {
     if (_disconnected) {
       return;
     }

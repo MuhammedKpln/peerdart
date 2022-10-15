@@ -53,14 +53,12 @@ class MediaConnection extends BaseConnection {
     }
 
     open = false;
-
-    super.emit<void>("close", null);
   }
 
   void _stopMediaDevice() {
     final tracks = _localStream?.getTracks();
 
-    tracks?.forEach((track) => track.stop());
+    tracks?.forEach((track) async => await track.stop());
   }
 
   @override

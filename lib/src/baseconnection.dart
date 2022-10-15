@@ -9,6 +9,7 @@ abstract class BaseConnection extends StreamEventEmitter {
   BaseConnection(this.peer, this.provider, this.options) {
     metadata = options?.metadata;
   }
+
   bool open = false;
   late String connectionId;
   RTCPeerConnection? peerConnection;
@@ -20,4 +21,8 @@ abstract class BaseConnection extends StreamEventEmitter {
 
   void dispose();
   void handleMessage(ServerMessage message);
+
+  void closeRequest() {
+    emit("close", null);
+  }
 }

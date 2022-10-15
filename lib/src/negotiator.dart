@@ -200,12 +200,14 @@ class Negotiator<T extends BaseConnection> {
             "error",
             Exception("${"Negotiation of connection to $peerId"} failed."),
           );
+          connection.closeRequest();
           connection.dispose();
           break;
         case RTCIceConnectionState.RTCIceConnectionStateDisconnected:
           logger.log(
             "iceConnectionState changed to disconnected on the connection with $peerId",
           );
+          connection.closeRequest();
           connection.dispose();
           break;
         case RTCIceConnectionState.RTCIceConnectionStateClosed:
@@ -216,6 +218,7 @@ class Negotiator<T extends BaseConnection> {
             "error",
             Exception("Connection to $peerId closed."),
           );
+          connection.closeRequest();
           connection.dispose();
           break;
       }

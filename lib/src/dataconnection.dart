@@ -66,7 +66,7 @@ class DataConnection extends BaseConnection {
 
     open = false;
 
-    super.emit<void>("close", null);
+    close();
   }
 
   @override
@@ -113,7 +113,8 @@ class DataConnection extends BaseConnection {
 
         case RTCDataChannelState.RTCDataChannelClosed:
           logger.log('DC#$connectionId dc closed for:$peer');
-          close();
+          closeRequest();
+          dispose();
           break;
       }
 

@@ -26,23 +26,27 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
   void initState() {
     super.initState();
 
-    peer.on("open", null, (ev, context) {
+    peer.on("open").listen((id) {
       setState(() {
         peerId = peer.id;
       });
     });
 
-    peer.on("connection", null, (ev, context) {
-      conn = ev.eventData as DataConnection;
+    peer.on<DataConnection>("connection").listen((event) {
+      conn = event;
+
+      conn.on("close").listen((event) {
+        setState(() {
+          connected = false;
+        });
+      });
 
       setState(() {
         connected = true;
       });
     });
 
-    peer.on("data", null, (ev, _) {
-      final data = ev.eventData as String;
-
+    peer.on("data").listen((data) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(data)));
     });
   }
@@ -51,14 +55,18 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
     final connection = peer.connect(_controller.text);
     conn = connection;
 
-    conn.on("open", null, (ev, _) {
+    conn.on("open").listen((event) {
       setState(() {
         connected = true;
       });
 
-      conn.on("data", null, (ev, _) {
-        final data = ev.eventData as String;
+      connection.on("close").listen((event) {
+        setState(() {
+          connected = false;
+        });
+      });
 
+      conn.on("data").listen((data) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(data)));
       });

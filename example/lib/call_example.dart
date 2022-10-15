@@ -23,22 +23,27 @@ class _CallExampleState extends State<CallExample> {
     _localRenderer.initialize();
     _remoteRenderer.initialize();
 
-    peer.on("open", null, (ev, context) {
+    peer.on("open").listen((id) {
       setState(() {
         peerId = peer.id;
       });
     });
 
-    peer.on("call", null, (ev, context) async {
-      final call = ev.eventData as MediaConnection;
+    peer.on<MediaConnection>("call").listen((call) async {
       final mediaStream = await navigator.mediaDevices
           .getUserMedia({"video": true, "audio": false});
 
       call.answer(mediaStream);
 
-      call.on("stream", null, (ev, _) async {
+      call.on("close").listen((event) {
+        setState(() {
+          inCall = false;
+        });
+      });
+
+      call.on<MediaStream>("stream").listen((event) {
         _localRenderer.srcObject = mediaStream;
-        _remoteRenderer.srcObject = ev.eventData as MediaStream;
+        _remoteRenderer.srcObject = event;
 
         setState(() {
           inCall = true;
@@ -62,8 +67,14 @@ class _CallExampleState extends State<CallExample> {
 
     final conn = peer.call(_controller.text, mediaStream);
 
-    conn.on("stream", null, (ev, _) {
-      _remoteRenderer.srcObject = ev.eventData as MediaStream;
+    conn.on("close").listen((event) {
+      setState(() {
+        inCall = false;
+      });
+    });
+
+    conn.on<MediaStream>("stream").listen((event) {
+      _remoteRenderer.srcObject = event;
       _localRenderer.srcObject = mediaStream;
 
       setState(() {

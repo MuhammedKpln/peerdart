@@ -5,7 +5,7 @@ import 'package:peerdart/src/util.dart';
 import 'config.dart';
 
 class PeerOptions {
-  Function? logFunction;
+  void Function(LogLevel level, dynamic message)? logFunction;
   String? host;
   int? port;
   LogLevel? debug;

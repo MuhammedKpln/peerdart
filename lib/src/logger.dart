@@ -2,15 +2,21 @@ import 'enums.dart';
 
 const _logPrefix = 'PeerDart: ';
 
-/*
-Prints log messages depending on the debug level passed in. Defaults to 0.
-0  Prints no logs.
-1  Prints only errors.
-2  Prints errors and warnings.
-3  Prints all logs.
-*/
-
 class Logger {
+  Logger() {
+    _print = (LogLevel logLevel, dynamic message) {
+      var msg = '$_logPrefix ${message.toString()}';
+
+      if (logLevel == LogLevel.All) {
+        print(msg);
+      } else if (logLevel == LogLevel.Warnings) {
+        print("WARNING $msg");
+      } else if (logLevel == LogLevel.Errors) {
+        print("ERROR $msg");
+      }
+    };
+  }
+
   var logLevel = LogLevel.Disabled;
 
   log(dynamic message) {
@@ -31,21 +37,11 @@ class Logger {
     }
   }
 
-  setLogFunction(Function fn) {
+  setLogFunction(Function(LogLevel level, dynamic message) fn) {
     _print = fn;
   }
 
-  Function _print = (LogLevel logLevel, dynamic message) {
-    var msg = '$_logPrefix ${message.toString()}';
-
-    if (logLevel == LogLevel.All) {
-      print(msg);
-    } else if (logLevel == LogLevel.Warnings) {
-      print("WARNING $msg");
-    } else if (logLevel == LogLevel.Errors) {
-      print("ERROR $msg");
-    }
-  };
+  late void Function(LogLevel level, dynamic message) _print;
 }
 
 final logger = Logger();

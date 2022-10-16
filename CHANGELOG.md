@@ -1,3 +1,10 @@
+# 0.3.1
+- Merge branch 'main' of https://github.com/MuhammedKpln/peerdart
+- test(logger,peer): add some test #3
+- refactor(logger): add types to log function
+- secure on merge
+- Update option_interfaces.dart
+
 # 0.3.0
 - ignored .failed_tracker
 - chore: update readme

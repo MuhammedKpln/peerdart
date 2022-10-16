@@ -31,7 +31,7 @@ class PeerOptions {
     token = util.randomToken();
   }
 
- PeerOptions merge(PeerOptions options) => PeerOptions(
+  PeerOptions merge(PeerOptions options) => PeerOptions(
       debug: options.debug ?? debug,
       host: options.host ?? host,
       port: options.port ?? port,

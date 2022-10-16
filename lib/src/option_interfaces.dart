@@ -31,13 +31,16 @@ class PeerOptions {
     token = util.randomToken();
   }
 
-  PeerOptions merge(PeerOptions options) => PeerOptions(
+ PeerOptions merge(PeerOptions options) => PeerOptions(
       debug: options.debug ?? debug,
       host: options.host ?? host,
       port: options.port ?? port,
       path: options.path ?? path,
       key: options.key ?? key,
       token: options.token ?? token,
+      secure: options.secure != null ? options.secure : secure,
+      pingInterval: options.pingInterval ?? pingInterval,
+      logFunction: options.logFunction ?? logFunction,
       config: options.config ?? config);
 }
 

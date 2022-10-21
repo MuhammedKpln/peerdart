@@ -1,3 +1,8 @@
+# 0.3.2
+- test: add path test
+- chore: remove comments
+- fix: Add trailing slash to custom paths #7
+
 # 0.3.1
 - Merge branch 'main' of https://github.com/MuhammedKpln/peerdart
 - test(logger,peer): add some test #3

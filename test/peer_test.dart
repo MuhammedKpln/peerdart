@@ -125,7 +125,7 @@ void main() {
 
     test("connect => disconnect => reconnect => destroy", () {
       final peer1 =
-          Peer(id: "1", options: PeerOptions(host: "127.0.01", port: 9000));
+          Peer(id: "1", options: PeerOptions(host: "127.0.0.1", port: 9000));
 
       peer1.once("open").then((value) {
         expect(peer1.open, true);
@@ -162,7 +162,7 @@ void main() {
     });
 
     test("disconnect peer if no id and no connection", () {
-      final peer1 = Peer(options: PeerOptions(host: "127.0.01", port: 9000));
+      final peer1 = Peer(options: PeerOptions(host: "127.0.0.1", port: 9000));
 
       peer1.once("error").then((value) {
         peer1.once("close").then((value) {
@@ -171,6 +171,13 @@ void main() {
           expect(peer1.open, false);
         });
       });
+    });
+
+    test("path should be set correctly", () async {
+      final peer1 = Peer(
+          options: PeerOptions(host: "127.0.0.1", port: 9000, path: "selam"));
+
+      expect(peer1.path, "/selam/");
     });
   });
 }

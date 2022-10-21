@@ -85,6 +85,10 @@ class Peer extends StreamEventEmitter {
     return _options;
   }
 
+  String? get path {
+    return _options.path;
+  }
+
   bool get open {
     return _open;
   }

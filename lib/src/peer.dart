@@ -31,9 +31,24 @@ class Peer extends StreamEventEmitter {
 
     _options = initOptions;
 
+    // 		if (this._options.path) {
+    // 	if (this._options.path[0] !== "/") {
+    // 		this._options.path = "/" + this._options.path;
+    // 	}
+    // 	if (this._options.path[this._options.path.length - 1] !== "/") {
+    // 		this._options.path += "/";
+    // 	}
+    // }
+
     // Set path correctly.
-    if (_options.path != '/') {
-      _options.path = '/${_options.path}';
+    if (_options.path != null) {
+      if (_options.path![0] != "/") {
+        _options.path = "/${_options.path!}";
+      }
+
+      if (_options.path![_options.path!.length - 1] != "/") {
+        _options.path = "${_options.path!}/";
+      }
     }
 
     // Set a custom log function if present

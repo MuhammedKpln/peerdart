@@ -1,3 +1,6 @@
+# 0.4.0-beta.1
+- feat: add support for binary data
+
 # 0.3.2
 - test: add path test
 - chore: remove comments

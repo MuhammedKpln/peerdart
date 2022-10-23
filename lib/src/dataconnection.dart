@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:peerdart/src/baseconnection.dart';
@@ -124,7 +125,13 @@ class DataConnection extends BaseConnection {
       }
 
       dataChannel?.onMessage = (message) {
-        logger.log('DC#$connectionId dc onmessage:${message.text}');
+        String? msg;
+
+        if (!message.isBinary) {
+          msg = message.text;
+        }
+
+        logger.log('DC#$connectionId dc onmessage:$msg');
         _handleDataMessage(message);
       };
     };
@@ -138,9 +145,13 @@ class DataConnection extends BaseConnection {
 
       provider?.emit('data', deserializedData);
     }
+
+    if (datatype == MessageType.binary) {
+      provider?.emit<Uint8List>('binary', message.binary);
+    }
   }
 
-  void send(dynamic data, {bool? chunked}) {
+  Future<void> send(dynamic data) async {
     if (!open) {
       logger.error(
         "Connection is not open. You should listen for the `open` event before sending messages.",
@@ -155,7 +166,26 @@ class DataConnection extends BaseConnection {
     }
 
     if (serialization == SerializationType.JSON) {
-      dataChannel?.send(RTCDataChannelMessage(jsonEncode(data)));
+      await dataChannel?.send(RTCDataChannelMessage(jsonEncode(data)));
     }
+  }
+
+  Future<void> sendBinary(Uint8List binary) async {
+    if (!open) {
+      logger.error(
+        "Connection is not open. You should listen for the `open` event before sending messages.",
+      );
+      super.emit(
+        "error",
+        Exception(
+          "Connection is not open. You should listen for the `open` event before sending messages.",
+        ),
+      );
+      return;
+    }
+
+    final message = RTCDataChannelMessage.fromBinary(binary);
+
+    await dataChannel?.send(message);
   }
 }

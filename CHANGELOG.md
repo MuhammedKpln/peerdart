@@ -1,3 +1,6 @@
+# 0.4.0-beta.2
+- chore(dataconnection) remove late keyword
+
 # 0.4.0-beta.1
 - feat: add support for binary data
 

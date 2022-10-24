@@ -43,7 +43,7 @@ class DataConnection extends BaseConnection {
 
   SerializationType serialization = SerializationType.JSON;
 
-  late RTCDataChannel? _dc;
+  RTCDataChannel? _dc;
 
   RTCDataChannel? get dataChannel {
     return _dc;

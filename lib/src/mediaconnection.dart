@@ -71,7 +71,7 @@ class MediaConnection extends BaseConnection {
     switch (message.type) {
       case ServerMessageType.Answer:
         // Forward to negotiator
-        _negotiator?.handleSDP(message.type.type, payload["sdp"]);
+        _negotiator?.handleSDP(payload["sdp"]["type"], payload["sdp"]);
         open = true;
         break;
       case ServerMessageType.Candidate:

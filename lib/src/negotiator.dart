@@ -37,8 +37,8 @@ class Negotiator<T extends BaseConnection> {
     }
   }
 
-  Future<void> handleSDP(String type, String sdp) async {
-    final description = RTCSessionDescription(sdp, type.toLowerCase());
+  Future<void> handleSDP(String type, Map<String, dynamic> sdp) async {
+    final description = RTCSessionDescription(sdp["sdp"], sdp["type"]);
 
     final peerConnection = connection.peerConnection;
     final provider = connection.provider;
@@ -110,7 +110,7 @@ class Negotiator<T extends BaseConnection> {
         logger.log("Set localDescription: $offer for ${connection.peer}");
 
         var payload = {
-          "sdp": offer.sdp,
+          "sdp": offer.toMap(),
           "type": connection.type.type,
           "connectionId": connection.connectionId,
           "metadata": connection.metadata,

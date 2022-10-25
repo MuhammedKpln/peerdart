@@ -38,7 +38,7 @@ class PeerOptions {
       path: options.path ?? path,
       key: options.key ?? key,
       token: options.token ?? token,
-      secure: options.secure != null ? options.secure : secure,
+      secure: options.secure ?? secure,
       pingInterval: options.pingInterval ?? pingInterval,
       logFunction: options.logFunction ?? logFunction,
       config: options.config ?? config);
@@ -68,7 +68,7 @@ class PeerConnectOption {
   Function? sdpTransform;
   Map<String, dynamic>? constraints;
   bool? originator;
-  String? sdp;
+  Map<String, dynamic>? sdp;
 
   PeerConnectOption copyWith(
       {String? connectionId,

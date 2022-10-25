@@ -75,8 +75,7 @@ class DataConnection extends BaseConnection {
 
     switch (message.type) {
       case ServerMessageType.Answer:
-        logger.log("Got answer");
-        _negotiator?.handleSDP(message.type.type, payload["sdp"]);
+        _negotiator?.handleSDP(payload["sdp"]["type"], payload["sdp"]);
         break;
 
       case ServerMessageType.Candidate:

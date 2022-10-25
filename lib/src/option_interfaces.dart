@@ -38,7 +38,7 @@ class PeerOptions {
       path: options.path ?? path,
       key: options.key ?? key,
       token: options.token ?? token,
-      secure: options.secure ?? secure,
+      secure: options.secure,
       pingInterval: options.pingInterval ?? pingInterval,
       logFunction: options.logFunction ?? logFunction,
       config: options.config ?? config);

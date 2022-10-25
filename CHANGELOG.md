@@ -1,3 +1,6 @@
+# 0.4.0-beta.3
+- fix(compatibilty) peerjs is now compatible with the client
+
 # 0.4.0-beta.2
 - chore(dataconnection) remove late keyword
 

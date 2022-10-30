@@ -72,7 +72,7 @@ class Negotiator<T extends BaseConnection> {
         provider?.socket.send({
           "type": ServerMessageType.Answer.type,
           "payload": {
-            "sdp": answer!.sdp,
+            "sdp": answer?.toMap(),
             "type": connection.type.type,
             "connectionId": connection.connectionId,
             "browser": "s",

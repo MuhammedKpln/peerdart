@@ -1,3 +1,9 @@
+# 0.4.0-beta.4
+- chore: add vscode debug
+- chore: add audio/camera permissions
+- feat(dataconnection): seperate binary  channel
+- fix(mediaconnection) sending wrong sdp
+
 # 0.4.0-beta.3
 - fix(compatibilty) peerjs is now compatible with the client
 

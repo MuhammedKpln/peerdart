@@ -44,9 +44,14 @@ class DataConnection extends BaseConnection {
   SerializationType serialization = SerializationType.JSON;
 
   RTCDataChannel? _dc;
+  RTCDataChannel? _bc;
 
   RTCDataChannel? get dataChannel {
     return _dc;
+  }
+
+  RTCDataChannel? get binaryChannel {
+    return _bc;
   }
 
   @override
@@ -55,6 +60,10 @@ class DataConnection extends BaseConnection {
       _negotiator?.cleanup();
       _negotiator = null;
     }
+
+    binaryChannel?.onDataChannelState = null;
+    binaryChannel?.onMessage = null;
+    _bc = null;
 
     dataChannel?.onDataChannelState = null;
     dataChannel?.onMessage = null;
@@ -96,8 +105,17 @@ class DataConnection extends BaseConnection {
   ConnectionType get type => ConnectionType.Data;
 
   /// Called by the Negotiator when the DataChannel is ready. */
-  void initialize(RTCDataChannel dc) {
-    _dc = dc;
+  void initialize(RTCDataChannel dc, {RTCDataChannel? bc}) {
+    if (bc != null) {
+      _bc = bc;
+    }
+
+    if (dc.label == DataChannels.binary.name) {
+      _bc = dc;
+    } else {
+      _dc = dc;
+    }
+
     _configureDataChannel();
   }
 
@@ -124,6 +142,38 @@ class DataConnection extends BaseConnection {
       }
 
       dataChannel?.onMessage = (message) {
+        String? msg;
+
+        if (!message.isBinary) {
+          msg = message.text;
+        }
+
+        logger.log('DC#$connectionId dc onmessage:$msg');
+        _handleDataMessage(message);
+      };
+    };
+    binaryChannel?.onDataChannelState = (state) {
+      switch (state) {
+        case RTCDataChannelState.RTCDataChannelOpen:
+          logger.log('DC#$connectionId dc connection success');
+          open = true;
+          super.emit<void>('open', null);
+          break;
+
+        case RTCDataChannelState.RTCDataChannelClosed:
+          logger.log('DC#$connectionId dc closed for:$peer');
+          closeRequest();
+          dispose();
+          break;
+        case RTCDataChannelState.RTCDataChannelConnecting:
+          // TODO: Handle this case.
+          break;
+        case RTCDataChannelState.RTCDataChannelClosing:
+          // TODO: Handle this case.
+          break;
+      }
+
+      binaryChannel?.onMessage = (message) {
         String? msg;
 
         if (!message.isBinary) {
@@ -185,6 +235,6 @@ class DataConnection extends BaseConnection {
 
     final message = RTCDataChannelMessage.fromBinary(binary);
 
-    await dataChannel?.send(message);
+    await binaryChannel?.send(message);
   }
 }

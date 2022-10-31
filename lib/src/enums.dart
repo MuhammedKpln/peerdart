@@ -81,3 +81,5 @@ enum PeerEventListener {
   final String event;
   const PeerEventListener(this.event);
 }
+
+enum DataChannels { binary, data }

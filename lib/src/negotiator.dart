@@ -28,8 +28,12 @@ class Negotiator<T extends BaseConnection> {
         final RTCDataChannelInit config = RTCDataChannelInit();
 
         final dataChannel = await peerConnection.createDataChannel(
-            dataConnection.label, config);
-        dataConnection.initialize(dataChannel);
+            DataChannels.data.name, config);
+
+        final binaryChannel = await peerConnection.createDataChannel(
+            DataChannels.binary.name, config);
+
+        dataConnection.initialize(dataChannel, bc: binaryChannel);
       }
       await _makeOffer();
     } else {
@@ -247,7 +251,7 @@ class Negotiator<T extends BaseConnection> {
     // in the options hash.
 
     peerConnection.onDataChannel = (channel) {
-      logger.log("Received data channel");
+      logger.log("Received data channel ${channel.label}");
 
       final dataChannel = channel;
 

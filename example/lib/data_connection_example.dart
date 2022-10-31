@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:peerdart/peerdart.dart';
 
@@ -9,7 +11,7 @@ class DataConnectionExample extends StatefulWidget {
 }
 
 class _DataConnectionExampleState extends State<DataConnectionExample> {
-  Peer peer = Peer();
+  Peer peer = Peer(options: PeerOptions(debug: LogLevel.All));
   final TextEditingController _controller = TextEditingController();
   String? peerId;
   late DataConnection conn;
@@ -49,6 +51,11 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
     peer.on("data").listen((data) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(data)));
     });
+
+    peer.on("binary").listen((data) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Got binary")));
+    });
   }
 
   void connect() {
@@ -70,11 +77,20 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(data)));
       });
+      conn.on("binary").listen((data) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Got binary!")));
+      });
     });
   }
 
   void sendHelloWorld() {
     conn.send("Hello world!");
+  }
+
+  void sendBinary() {
+    final bytes = Uint8List(30);
+    conn.sendBinary(bytes);
   }
 
   @override
@@ -97,6 +113,9 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
               ElevatedButton(
                   onPressed: sendHelloWorld,
                   child: const Text("Send Hello World to peer")),
+              ElevatedButton(
+                  onPressed: sendBinary,
+                  child: const Text("Send binary to peer")),
             ],
           ),
         ));

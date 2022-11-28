@@ -119,27 +119,31 @@ class DataConnection extends BaseConnection {
     _configureDataChannel();
   }
 
+  void _handleRTCEvents(RTCDataChannelState state) {
+    switch (state) {
+      case RTCDataChannelState.RTCDataChannelOpen:
+        logger.log('DC#$connectionId dc connection success');
+        open = true;
+        super.emit<void>('open', null);
+        break;
+
+      case RTCDataChannelState.RTCDataChannelClosed:
+        logger.log('DC#$connectionId dc closed for:$peer');
+        closeRequest();
+        dispose();
+        break;
+      case RTCDataChannelState.RTCDataChannelConnecting:
+        // TODO: Handle this case.
+        break;
+      case RTCDataChannelState.RTCDataChannelClosing:
+        // TODO: Handle this case.
+        break;
+    }
+  }
+
   void _configureDataChannel() {
     dataChannel?.onDataChannelState = (state) {
-      switch (state) {
-        case RTCDataChannelState.RTCDataChannelOpen:
-          logger.log('DC#$connectionId dc connection success');
-          open = true;
-          super.emit<void>('open', null);
-          break;
-
-        case RTCDataChannelState.RTCDataChannelClosed:
-          logger.log('DC#$connectionId dc closed for:$peer');
-          closeRequest();
-          dispose();
-          break;
-        case RTCDataChannelState.RTCDataChannelConnecting:
-          // TODO: Handle this case.
-          break;
-        case RTCDataChannelState.RTCDataChannelClosing:
-          // TODO: Handle this case.
-          break;
-      }
+      _handleRTCEvents(state);
 
       dataChannel?.onMessage = (message) {
         String? msg;
@@ -153,25 +157,7 @@ class DataConnection extends BaseConnection {
       };
     };
     binaryChannel?.onDataChannelState = (state) {
-      switch (state) {
-        case RTCDataChannelState.RTCDataChannelOpen:
-          logger.log('DC#$connectionId dc connection success');
-          open = true;
-          super.emit<void>('open', null);
-          break;
-
-        case RTCDataChannelState.RTCDataChannelClosed:
-          logger.log('DC#$connectionId dc closed for:$peer');
-          closeRequest();
-          dispose();
-          break;
-        case RTCDataChannelState.RTCDataChannelConnecting:
-          // TODO: Handle this case.
-          break;
-        case RTCDataChannelState.RTCDataChannelClosing:
-          // TODO: Handle this case.
-          break;
-      }
+      _handleRTCEvents(state);
 
       binaryChannel?.onMessage = (message) {
         String? msg;
@@ -192,11 +178,11 @@ class DataConnection extends BaseConnection {
     if (datatype == MessageType.text) {
       dynamic deserializedData = jsonDecode(message.text);
 
-      provider?.emit('data', deserializedData);
+      super.emit('data', deserializedData);
     }
 
     if (datatype == MessageType.binary) {
-      provider?.emit<Uint8List>('binary', message.binary);
+      super.emit<Uint8List>('binary', message.binary);
     }
   }
 

@@ -1,3 +1,6 @@
+# 0.4.0-beta.5
+- fix(dataconnection) emits events on wrong object.
+
 # 0.4.0-beta.4
 - chore: add vscode debug
 - chore: add audio/camera permissions

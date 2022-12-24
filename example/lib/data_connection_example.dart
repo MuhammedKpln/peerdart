@@ -37,6 +37,16 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
     peer.on<DataConnection>("connection").listen((event) {
       conn = event;
 
+      conn.on("data").listen((data) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(data)));
+      });
+
+      conn.on("binary").listen((data) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Got binary")));
+      });
+
       conn.on("close").listen((event) {
         setState(() {
           connected = false;
@@ -46,15 +56,6 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
       setState(() {
         connected = true;
       });
-    });
-
-    peer.on("data").listen((data) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(data)));
-    });
-
-    peer.on("binary").listen((data) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Got binary")));
     });
   }
 

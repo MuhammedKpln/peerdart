@@ -1,5 +1,10 @@
+# 0.5.0
+- chore: vscode debug options
+- example: update example to match with latest version
+- Update issue templates
+
 # 0.4.0-beta.5
-- fix(dataconnection) emits events on wrong object.
+- BREAKING: fix(dataconnection) emits events on wrong object.
 
 # 0.4.0-beta.4
 - chore: add vscode debug

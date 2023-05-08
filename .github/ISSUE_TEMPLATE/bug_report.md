@@ -1,41 +1,27 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
+title: 'Call connection issue when peers are outside the local network'
 labels: bug
 assignees: ''
 
 ---
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+When users are in the same network, let's say on home wifi, the call process works great. Try to get one of them outside the local area, the call will not be established correctly.
 
 **To Reproduce**
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1. A and B are in different networks
+2. A Makes a call for B
+3. B answer the call.
+4. Connection between A and B cannot be established
+5. The call will close soon.
 
 **Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
- - Peerdart version
+When peer are in different networks, the connection between them should be established correctly.
 
 **Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
- - Peerdart version
-
-
-**Additional context**
-Add any other context about the problem here.
+ - Device: Google Pixel 6 and Samsung Galaxy S7
+ - OS: Android 13 and Android 10
+ - Peerdart version 0.5.0

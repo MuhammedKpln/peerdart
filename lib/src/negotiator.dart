@@ -172,14 +172,17 @@ class Negotiator<T extends BaseConnection> {
     final connectionId = connection.connectionId;
     final connectionType = connection.type;
     final provider = connection.provider;
+    final candidates = [];
 
     // ICE CANDIDATES.
     logger.log("Listening for ICE candidates.");
 
     peerConnection.onIceCandidate = (candidate) {
       logger.log("Received ICE candidates for $peerId: $candidate");
-
-      provider?.socket.send({
+      /// If the second peer is connected and ready to receive candidates,
+      /// Else, we store the received candidates and store them in the array
+      /// above and send them when the second peer is ready
+      final cdt = {
         "type": ServerMessageType.Candidate.type,
         "payload": {
           "candidate": candidate.toMap(),
@@ -187,8 +190,26 @@ class Negotiator<T extends BaseConnection> {
           "connectionId": connectionId,
         },
         "dst": peerId,
-      });
+      };
+      if (connection is! MediaConnection) {
+        provider?.socket.send(cdt);
+      } else
+      if (peerConnection.connectionState != null) {
+        provider?.socket.send(cdt);
+      } else {
+        candidates.add(cdt);
+      }
     };
+
+    /// The second peer is connected and ready to receive candidates
+    if (connection is MediaConnection) {
+      connection.on('stream').listen((event) {
+        for (var data in candidates) {
+          provider?.socket.send(data);
+        }
+        candidates.clear();
+      });
+    }
 
     peerConnection.onIceConnectionState = (state) {
       switch (state) {

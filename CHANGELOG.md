@@ -1,3 +1,8 @@
+# 0.5.1
+- bump: flutter_webrtc, web_socket_channel
+- fix: Fixed the call outside local network bug (@procodingtools)
+- Fixed call outside local network bug
+
 # 0.5.0
 - chore: vscode debug options
 - example: update example to match with latest version

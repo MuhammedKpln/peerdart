@@ -9,8 +9,8 @@ environment:
 dependencies: 
   http: ^0.13.5
   uuid: ^3.0.6
-  flutter_webrtc: ^0.9.6
-  web_socket_channel: ^2.2.0
+  flutter_webrtc: ^0.9.35
+  web_socket_channel: ^2.4.0
   events_emitter: ^0.5.2
 dev_dependencies: 
   lints: ^2.0.0

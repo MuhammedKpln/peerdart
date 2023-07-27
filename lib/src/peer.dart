@@ -174,7 +174,7 @@ class Peer extends StreamEventEmitter {
         );
         break;
       case ServerMessageType
-          .Leave: // Another peer has closed its connection to this peer.
+            .Leave: // Another peer has closed its connection to this peer.
         logger.log("Received leave message from $peerId");
         if (peerId != null) {
           _cleanupPeer(peerId);
@@ -182,7 +182,7 @@ class Peer extends StreamEventEmitter {
         }
         break;
       case ServerMessageType
-          .Expire: // The offer sent to a peer has expired without response.
+            .Expire: // The offer sent to a peer has expired without response.
         emitError(
           PeerErrorType.PeerUnavailable,
           "Could not connect to peer $peerId",
@@ -337,8 +337,6 @@ class Peer extends StreamEventEmitter {
       _cleanupPeer(peer);
       _connections.removeWhere((key, value) => key == peer);
     }
-
-    close();
   }
 
   /// Attempts to reconnect with the same ID. */

@@ -1,37 +1,50 @@
+# 0.5.2
+
+- fix: update turn servers
+
 # 0.5.1
+
 - bump: flutter_webrtc, web_socket_channel
 - fix: Fixed the call outside local network bug (@procodingtools)
 - Fixed call outside local network bug
 
 # 0.5.0
+
 - chore: vscode debug options
 - example: update example to match with latest version
 - Update issue templates
 
 # 0.4.0-beta.5
+
 - BREAKING: fix(dataconnection) emits events on wrong object.
 
 # 0.4.0-beta.4
+
 - chore: add vscode debug
 - chore: add audio/camera permissions
-- feat(dataconnection): seperate binary  channel
+- feat(dataconnection): seperate binary channel
 - fix(mediaconnection) sending wrong sdp
 
 # 0.4.0-beta.3
+
 - fix(compatibilty) peerjs is now compatible with the client
 
 # 0.4.0-beta.2
+
 - chore(dataconnection) remove late keyword
 
 # 0.4.0-beta.1
+
 - feat: add support for binary data
 
 # 0.3.2
+
 - test: add path test
 - chore: remove comments
 - fix: Add trailing slash to custom paths #7
 
 # 0.3.1
+
 - Merge branch 'main' of https://github.com/MuhammedKpln/peerdart
 - test(logger,peer): add some test #3
 - refactor(logger): add types to log function
@@ -39,6 +52,7 @@
 - Update option_interfaces.dart
 
 # 0.3.0
+
 - ignored .failed_tracker
 - chore: update readme
 - chore: remove un file
@@ -77,18 +91,14 @@
 
 - Reconnect functionality.
 
-
 ## 0.1.2
 
 - Fix crash on dispose
-
 
 ## 0.1.1
 
 - Dispose media receivers on dispose.
 
-
 ## 0.1.0
 
 - Initial version.
-

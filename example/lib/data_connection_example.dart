@@ -34,6 +34,12 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
       });
     });
 
+    peer.on("close").listen((id) {
+      setState(() {
+        connected = false;
+      });
+    });
+
     peer.on<DataConnection>("connection").listen((event) {
       conn = event;
 
@@ -94,6 +100,14 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
     conn.sendBinary(bytes);
   }
 
+  void closeConnection() {
+    peer.dispose();
+  }
+
+  void reconnect() {
+    peer = Peer();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,6 +131,11 @@ class _DataConnectionExampleState extends State<DataConnectionExample> {
               ElevatedButton(
                   onPressed: sendBinary,
                   child: const Text("Send binary to peer")),
+              ElevatedButton(
+                  onPressed: closeConnection,
+                  child: const Text("Close connection,")),
+              ElevatedButton(
+                  onPressed: reconnect, child: const Text("Re connect,")),
             ],
           ),
         ));

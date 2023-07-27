@@ -13,3 +13,7 @@ pubspec.lock
 .idea/libraries/Dart_SDK.xml
 .idea/modules.xml
 .idea/peerdart.iml
+.flutter-plugins
+.flutter-plugins-dependencies
+.dart_tool
+.idea

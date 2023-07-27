@@ -1,3 +1,10 @@
+# 0.5.3
+- chore: update version
+- example: update data example
+- bump: http to 1.1.0
+- chore: remove platform files
+- fix: do not close stream controller. Closes #30,#29
+
 # 0.5.2
 
 - fix: update turn servers

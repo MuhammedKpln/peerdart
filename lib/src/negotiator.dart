@@ -30,10 +30,7 @@ class Negotiator<T extends BaseConnection> {
         final dataChannel = await peerConnection.createDataChannel(
             DataChannels.data.name, config);
 
-        final binaryChannel = await peerConnection.createDataChannel(
-            DataChannels.binary.name, config);
-
-        dataConnection.initialize(dataChannel, bc: binaryChannel);
+        dataConnection.initialize(dataChannel);
       }
       await _makeOffer();
     } else {
@@ -179,6 +176,7 @@ class Negotiator<T extends BaseConnection> {
 
     peerConnection.onIceCandidate = (candidate) {
       logger.log("Received ICE candidates for $peerId: $candidate");
+
       /// If the second peer is connected and ready to receive candidates,
       /// Else, we store the received candidates and store them in the array
       /// above and send them when the second peer is ready
@@ -193,8 +191,7 @@ class Negotiator<T extends BaseConnection> {
       };
       if (connection is! MediaConnection) {
         provider?.socket.send(cdt);
-      } else
-      if (peerConnection.connectionState != null) {
+      } else if (peerConnection.connectionState != null) {
         provider?.socket.send(cdt);
       } else {
         candidates.add(cdt);

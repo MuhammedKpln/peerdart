@@ -18,17 +18,6 @@ class DataConnection extends BaseConnection {
     serialization = options?.serialization ?? SerializationType.JSON;
     reliable = options?.reliable ?? false;
 
-    // this._encodingQueue.on("done", (ab: ArrayBuffer) => {
-    // 	this._bufferedSend(ab);
-    // });
-
-    // this._encodingQueue.on("error", () => {
-    // 	logger.error(
-    // 		`DC#${this.connectionId}: Error occured in encoding from blob to arraybuffer, close DC`,
-    // 	);
-    // 	this.close();
-    // });
-
     _negotiator = Negotiator(this);
 
     _negotiator?.startConnection(
@@ -44,14 +33,9 @@ class DataConnection extends BaseConnection {
   SerializationType serialization = SerializationType.JSON;
 
   RTCDataChannel? _dc;
-  RTCDataChannel? _bc;
 
   RTCDataChannel? get dataChannel {
     return _dc;
-  }
-
-  RTCDataChannel? get binaryChannel {
-    return _bc;
   }
 
   @override
@@ -60,10 +44,6 @@ class DataConnection extends BaseConnection {
       _negotiator?.cleanup();
       _negotiator = null;
     }
-
-    binaryChannel?.onDataChannelState = null;
-    binaryChannel?.onMessage = null;
-    _bc = null;
 
     dataChannel?.onDataChannelState = null;
     dataChannel?.onMessage = null;
@@ -105,16 +85,8 @@ class DataConnection extends BaseConnection {
   ConnectionType get type => ConnectionType.Data;
 
   /// Called by the Negotiator when the DataChannel is ready. */
-  void initialize(RTCDataChannel dc, {RTCDataChannel? bc}) {
-    if (bc != null) {
-      _bc = bc;
-    }
-
-    if (dc.label == DataChannels.binary.name) {
-      _bc = dc;
-    } else {
-      _dc = dc;
-    }
+  void initialize(RTCDataChannel dc) {
+    _dc = dc;
 
     _configureDataChannel();
   }
@@ -146,20 +118,6 @@ class DataConnection extends BaseConnection {
       _handleRTCEvents(state);
 
       dataChannel?.onMessage = (message) {
-        String? msg;
-
-        if (!message.isBinary) {
-          msg = message.text;
-        }
-
-        logger.log('DC#$connectionId dc onmessage:$msg');
-        _handleDataMessage(message);
-      };
-    };
-    binaryChannel?.onDataChannelState = (state) {
-      _handleRTCEvents(state);
-
-      binaryChannel?.onMessage = (message) {
         String? msg;
 
         if (!message.isBinary) {
@@ -221,6 +179,6 @@ class DataConnection extends BaseConnection {
 
     final message = RTCDataChannelMessage.fromBinary(binary);
 
-    await binaryChannel?.send(message);
+    await dataChannel?.send(message);
   }
 }

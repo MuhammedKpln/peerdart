@@ -1,3 +1,6 @@
+# 0.5.4
+- fix: receiving data two times. Closes #35
+
 # 0.5.3
 - chore: update version
 - example: update data example

@@ -38,7 +38,8 @@ class MediaConnection extends BaseConnection {
     _negotiator?.cleanup();
     _negotiator = null;
 
-    _stopMediaDevice();
+    // This make local stream stop when disconnect from other peer
+    // _stopMediaDevice();
 
     _localStream = null;
     _remoteStream = null;
@@ -55,11 +56,11 @@ class MediaConnection extends BaseConnection {
     open = false;
   }
 
-  void _stopMediaDevice() {
-    final tracks = _localStream?.getTracks();
-
-    tracks?.forEach((track) async => await track.stop());
-  }
+  // void _stopMediaDevice() {
+  //   final tracks = _localStream?.getTracks();
+  //
+  //   tracks?.forEach((track) async => await track.stop());
+  // }
 
   @override
   ConnectionType get type => ConnectionType.Media;

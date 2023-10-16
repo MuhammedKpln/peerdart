@@ -1,10 +1,10 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:peerdart/peerdart.dart';
-import 'package:peerdart/src/baseconnection.dart';
-import 'package:peerdart/src/logger.dart';
-import 'package:peerdart/src/negotiator.dart';
-import 'package:peerdart/src/servermessage.dart';
-import 'package:peerdart/src/util.dart';
+import 'package:sb_peerdart/sb_peerdart.dart';
+import 'package:sb_peerdart/src/baseconnection.dart';
+import 'package:sb_peerdart/src/logger.dart';
+import 'package:sb_peerdart/src/negotiator.dart';
+import 'package:sb_peerdart/src/servermessage.dart';
+import 'package:sb_peerdart/src/util.dart';
 
 class MediaConnection extends BaseConnection {
   MediaConnection(super.peerId, super.provider, super.options) {

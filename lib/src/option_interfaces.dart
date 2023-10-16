@@ -1,6 +1,6 @@
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:peerdart/peerdart.dart';
-import 'package:peerdart/src/util.dart';
+import 'package:sb_peerdart/sb_peerdart.dart';
+import 'package:sb_peerdart/src/util.dart';
 
 import 'config.dart';
 

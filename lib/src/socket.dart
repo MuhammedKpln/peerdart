@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:events_emitter/emitters/stream_event_emitter.dart';
-import 'package:peerdart/src/logger.dart';
+import 'package:sb_peerdart/src/logger.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import 'enums.dart';

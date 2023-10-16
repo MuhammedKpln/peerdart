@@ -1,16 +1,16 @@
 import 'package:events_emitter/emitters/stream_event_emitter.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:peerdart/src/api.dart';
-import 'package:peerdart/src/baseconnection.dart';
-import 'package:peerdart/src/config.dart';
-import 'package:peerdart/src/dataconnection.dart';
-import 'package:peerdart/src/enums.dart';
-import 'package:peerdart/src/logger.dart';
-import 'package:peerdart/src/mediaconnection.dart';
-import 'package:peerdart/src/option_interfaces.dart';
-import 'package:peerdart/src/servermessage.dart';
-import 'package:peerdart/src/socket.dart';
-import 'package:peerdart/src/util.dart';
+import 'package:sb_peerdart/src/api.dart';
+import 'package:sb_peerdart/src/baseconnection.dart';
+import 'package:sb_peerdart/src/config.dart';
+import 'package:sb_peerdart/src/dataconnection.dart';
+import 'package:sb_peerdart/src/enums.dart';
+import 'package:sb_peerdart/src/logger.dart';
+import 'package:sb_peerdart/src/mediaconnection.dart';
+import 'package:sb_peerdart/src/option_interfaces.dart';
+import 'package:sb_peerdart/src/servermessage.dart';
+import 'package:sb_peerdart/src/socket.dart';
+import 'package:sb_peerdart/src/util.dart';
 
 class Peer extends StreamEventEmitter {
   Peer({String? id, PeerOptions? options}) {

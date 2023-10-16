@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:peerdart/src/baseconnection.dart';
-import 'package:peerdart/src/dataconnection.dart';
-import 'package:peerdart/src/option_interfaces.dart';
+import 'package:sb_peerdart/src/baseconnection.dart';
+import 'package:sb_peerdart/src/dataconnection.dart';
+import 'package:sb_peerdart/src/option_interfaces.dart';
 
 import 'enums.dart';
 import 'logger.dart';

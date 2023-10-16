@@ -1,7 +1,7 @@
 /// Support for doing something awesome.
 ///
 /// More dartdocs go here.
-library peerdart;
+library sb_peerdart;
 
 export 'src/peer.dart';
 export 'src/enums.dart';

@@ -273,10 +273,10 @@ class Negotiator<T extends BaseConnection> {
 
       final dataChannel = channel;
 
-      final DataConnection connection =
-          provider?.getConnection(peerId, connectionId);
+      final DataConnection? connection =
+          provider?.getDataConnection(peerId, connectionId);
 
-      connection.initialize(dataChannel);
+      connection?.initialize(dataChannel);
     };
 
     // MEDIACONNECTION.

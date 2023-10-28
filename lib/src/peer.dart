@@ -442,6 +442,24 @@ class Peer extends StreamEventEmitter {
     _lostMessages.removeWhere((k, v) => k == connection.connectionId);
   }
 
+  dynamic getDataConnection(String peerId, String connectionId) {
+    if (!_connections.containsKey(peerId)) {
+      logger.error("Could not get connection with id: $peerId");
+      return null;
+    }
+    final connections = _connections[peerId];
+
+    if (connections != null) {
+      for (final connection in connections) {
+        if (connection.connectionId == connectionId && connection.type == ConnectionType.Data) {
+          return connection;
+        }
+      }
+    }
+
+    return null;
+  }
+
   /// Retrieve a data/media connection for this peer. */
   dynamic getConnection(String peerId, String connectionId) {
     if (!_connections.containsKey(peerId)) {

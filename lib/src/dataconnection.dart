@@ -140,7 +140,14 @@ class DataConnection extends BaseConnection {
     }
 
     if (datatype == MessageType.binary) {
-      super.emit<Uint8List>('binary', message.binary);
+      dynamic deserializedData;
+      try {
+        deserializedData = jsonDecode(utf8.decode(message.binary));
+      } catch(ex) {
+        logger.error("Failed to parse the binary data: ${ex.toString()}");
+      }
+
+      super.emit('data', deserializedData);
     }
   }
 

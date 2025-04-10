@@ -10,10 +10,10 @@ dependencies:
     sdk: flutter
   http: ^1.1.0
   uuid: ^4.1.0
-  flutter_webrtc: ^0.11.6
+  flutter_webrtc: ^0.13.1+hotfix.1
   web_socket_channel: ^3.0.1
-  events_emitter: ^0.5.2
+  events_emitter: ^0.6.0
 dev_dependencies:
-  lints: ^4.0.0
+  lints: ^5.1.1
   flutter_test:
     sdk: flutter
